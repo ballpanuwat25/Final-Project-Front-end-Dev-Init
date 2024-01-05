@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 
 import App from './App';
 import Todo from './components/Todo';
+import Calendar2 from './components/Calendar2';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
@@ -16,7 +17,11 @@ const router = createBrowserRouter([
   {
     path: '/todo',
     element: <Todo />,
-  }
+  },
+  {
+    path: '/calendar',
+    element: <Calendar2 />,
+  },
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
