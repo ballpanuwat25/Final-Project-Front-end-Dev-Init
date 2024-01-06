@@ -5,7 +5,8 @@ import reportWebVitals from './reportWebVitals';
 
 import App from './App';
 import Todo from './components/Todo';
-import Calendar2 from './components/Calendar2';
+import Calendar from './components/Calendar';
+import Journals from './components/Journals';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
@@ -20,7 +21,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/calendar',
-    element: <Calendar2 />,
+    element: <Calendar />,
+  },
+  {
+    path: '/journal',
+    element: <Journals />,
   },
 ])
 

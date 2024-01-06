@@ -1,3 +1,4 @@
+import { Fragment, useState, useEffect } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { DotsVerticalIcon } from '@heroicons/react/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
@@ -15,77 +16,125 @@ import {
     parseISO, //Parse the given string in ISO 8601 format and return an instance of Date.
     startOfToday, //Return the start of today.
 } from 'date-fns'
-import { Fragment, useState } from 'react'
 
-// Utility function to concatenate CSS class names conditionally
+// Utility function to concatenate CSS class details conditionally
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 // Calendar component
-export default function Calendar2() {
-    const [meetings, setMeetings] = useState([
-        {
-            id: 1,
-            name: 'Leslie Alexander',
-            startDatetime: '2024-01-11T13:00',
-            endDatetime: '2024-01-12T14:30',
-        },
-        {
-            id: 2,
-            name: 'Michael Foster',
-            startDatetime: '2024-01-11T13:00',
-            endDatetime: '2024-01-15T14:30',
-        },
-    ])
+export default function Journals() {
+    const [journals, setJournals] = useState([])
+
+    useEffect(() => {
+        const savedJournals = JSON.parse(localStorage.getItem('journals')) || [];
+        setJournals(savedJournals)
+    }, [])
 
     // Initial setup using React state
-    let today = startOfToday()
-    let [selectedDay, setSelectedDay] = useState(today)
-    let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
-    let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
+    const today = startOfToday()
+    const [selectedDay, setSelectedDay] = useState(today)
+    const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
+    const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
 
     // Generate an array of days for the current month
-    let days = eachDayOfInterval({
+    const days = eachDayOfInterval({
         start: firstDayCurrentMonth,
         end: endOfMonth(firstDayCurrentMonth),
     })
 
     // Function to navigate to the previous month
-    function previousMonth() {
-        let firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 })
+    const previousMonth = () => {
+        const firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 })
         setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
     }
 
     // Function to navigate to the next month
-    function nextMonth() {
-        let firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 })
+    const nextMonth = () => {
+        const firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 })
         setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
     }
 
-    // Filter meetings for the selected day
-    let selectedDayMeetings = meetings.filter((meeting) =>
-        isSameDay(parseISO(meeting.startDatetime), selectedDay)
+    // Filter journals for the selected day
+    const selectedDayJournals = journals.filter((journal) =>
+        isSameDay(parseISO(journal.startDate), selectedDay)
     )
 
-    // State to manage the input for a new meeting
-    const [newMeetingInput, setNewMeetingInput] = useState('');
+    // State to manage the input for a new journal
+    const [newJournalInput, setNewJournalInput] = useState('');
+    const [dailyMood, setDailyMood] = useState('');
 
-    // Function to add a new meeting
-    function addMeeting() {
-        if (newMeetingInput.trim() !== '') {
-            const newMeeting = {
-                id: meetings.length + 1, // Generate a unique ID (you may need a more robust solution in a real app)
-                name: newMeetingInput,
-                startDatetime: selectedDay.toISOString(), // Use the selected day
-                endDatetime: selectedDay.toISOString(), // Use the selected day for simplicity, adjust as needed
+    // Function to add a new journal
+    const addJournal = () => {
+        if (newJournalInput.trim() !== '') {
+            const newJournal = {
+                id: journals.length + 1, // Generate a unique ID (you may need a more robust solution in a real app)
+                detail: newJournalInput,
+                mood: dailyMood,
+                startDate: selectedDay.toISOString(), // Use the selected day
             };
 
-            // Update the meetings array with the new meeting
-            setMeetings([...meetings, newMeeting]);
+            // Update the journals array with the new journal
+            setJournals([...journals, newJournal]);
 
             // Clear the input field
-            setNewMeetingInput('');
+            setNewJournalInput('');
+            setDailyMood('');
+
+            // Save the journals array to local storage
+            localStorage.setItem('journals', JSON.stringify([...journals, newJournal]));
+        }
+    }
+
+    // Function to delete a journal
+    const deleteJournal = (journalId) => {
+        const updatedJournals = journals.filter((journal) => journal.id !== journalId);
+        setJournals(updatedJournals);
+
+        // Save the journals array to local storage
+        localStorage.setItem('journals', JSON.stringify(updatedJournals));
+    }
+
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [editingJournalId, setEditingJournalId] = useState(null);
+
+    // Function to handle the "Edit" button click
+    const editJournal = (journalId) => {
+        const journalToEdit = journals.find((journal) => journal.id === journalId);
+
+        // Populate the form fields with the data of the selected journal
+        setNewJournalInput(journalToEdit.detail);
+        setDailyMood(journalToEdit.mood);
+
+        // Set edit mode and the journal being edited
+        setIsEditMode(true);
+        setEditingJournalId(journalId);
+    }
+
+    // Function to handle the "Update" button click
+    const updateJournal = () => {
+        if (newJournalInput.trim() !== '') {
+            const updatedJournals = journals.map((journal) =>
+                journal.id === editingJournalId
+                    ? {
+                        ...journal,
+                        detail: newJournalInput,
+                        mood: dailyMood,
+                    }
+                    : journal
+            );
+
+            // Update the journals array with the updated journal
+            setJournals(updatedJournals);
+
+            // Clear the input fields and exit edit mode
+            setNewJournalInput('');
+            setDailyMood('');
+            setIsEditMode(false);
+            setEditingJournalId(null);
+
+            // Save the journals array to local storage
+            localStorage.setItem('journals', JSON.stringify(updatedJournals));
         }
     }
 
@@ -116,6 +165,7 @@ export default function Calendar2() {
                                 <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
                             </button>
                         </div>
+
                         <div className="grid grid-cols-7 mt-10 text-xs leading-6 text-center text-gray-500">
                             <div>S</div>
                             <div>M</div>
@@ -166,8 +216,8 @@ export default function Calendar2() {
                                     </button>
 
                                     <div className="w-1 h-1 mx-auto mt-1">
-                                        {meetings.some((meeting) =>
-                                            isSameDay(parseISO(meeting.startDatetime), day)
+                                        {journals.some((journal) =>
+                                            isSameDay(parseISO(journal.startDate), day)
                                         ) && (
                                                 <div className="w-1 h-1 rounded-full bg-sky-500"></div>
                                             )}
@@ -176,37 +226,63 @@ export default function Calendar2() {
                             ))}
                         </div>
                     </div>
+
                     <section className="mt-12 md:mt-0 md:pl-14">
                         <h2 className="font-semibold text-gray-900">
-                            Schedule for{' '}
+                            Daily Journal for{' '}
                             <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
                                 {format(selectedDay, 'MMM dd, yyy')}
                             </time>
                         </h2>
                         <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                            <div className="flex items-center space-x-2 mb-2">
+                            <div className="flex flex-col mb-2 gap-2">
                                 <input
                                     type="text"
-                                    placeholder='Add a meeting'
+                                    placeholder='Today I feel...'
                                     className='w-full px-4 py-2 text-sm text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500'
-                                    value={newMeetingInput}
-                                    onChange={(e) => setNewMeetingInput(e.target.value)}
+                                    value={dailyMood}
+                                    onChange={(e) => setDailyMood(e.target.value)}
                                 />
-                                <button
-                                    type="button"
-                                    onClick={addMeeting}
-                                    className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-sky-500 border border-transparent rounded-md hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
-                                >
-                                    Add
-                                </button>
+
+                                <textarea
+                                    type="text"
+                                    placeholder='Describe a journal'
+                                    className='w-full px-4 py-2 text-sm text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500'
+                                    value={newJournalInput}
+                                    onChange={(e) => setNewJournalInput(e.target.value)}
+                                />
+
+                                {isEditMode ? (
+                                    <button
+                                        type="button"
+                                        onClick={updateJournal}
+                                        className="px-4 py-2 text-sm font-medium text-white bg-sky-500 border border-transparent rounded-md hover:bg-sky-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500"
+                                    >
+                                        Update
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={addJournal}
+                                        className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-sky-500 border border-transparent rounded-md hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+                                    >
+                                        Add
+                                    </button>
+                                )}
                             </div>
 
-                            {selectedDayMeetings.length > 0 ? (
-                                selectedDayMeetings.map((meeting) => (
-                                    <Meeting meeting={meeting} key={meeting.id} />
+
+                            {selectedDayJournals.length > 0 ? (
+                                selectedDayJournals.map((journal) => (
+                                    <Journal
+                                        journal={journal}
+                                        key={journal.id}
+                                        onDelete={deleteJournal}
+                                        onEdit={editJournal}
+                                    />
                                 ))
                             ) : (
-                                <p>No meetings for today.</p>
+                                <p>No journals for today.</p>
                             )}
                         </ol>
                     </section>
@@ -216,27 +292,16 @@ export default function Calendar2() {
     )
 }
 
-// Meeting component
-function Meeting({ meeting }) {
-    // Parse start and end times of the meeting
-    let startDateTime = parseISO(meeting.startDatetime)
-    let endDateTime = parseISO(meeting.endDatetime)
-
-    // JSX structure for a meeting item
+// Journal component
+const Journal = ({ journal, onDelete, onEdit }) => {
+    // JSX structure for a journal item
     return (
         <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
             <div className="flex-auto">
-                <p className="text-gray-900">{meeting.name}</p>
-                <p className="mt-0.5">
-                    <time dateTime={meeting.startDatetime}>
-                        {format(startDateTime, 'dd/MM/yyyy, h:mm a')}
-                    </time>{' '}
-                    -{' '}
-                    <time dateTime={meeting.endDatetime}>
-                        {format(endDateTime, 'dd/MM/yyyy, h:mm a')}
-                    </time>
-                </p>
+                <p className="text-gray-900">Today's Mood: {journal.mood}</p>
+                <p className="text-gray-900">Thought: {journal.detail}</p>
             </div>
+
             <Menu
                 as="div"
                 className="relative opacity-0 focus-within:opacity-100 group-hover:opacity-100"
@@ -261,28 +326,28 @@ function Meeting({ meeting }) {
                         <div className="py-1">
                             <Menu.Item>
                                 {({ active }) => (
-                                    <a
-                                        href="/"
+                                    <button
                                         className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
+                                            active ? 'bg-gray-100 text-gray-900 w-full text-left' : 'text-gray-700',
+                                            'block px-4 py-2 text-sm w-full text-left'
                                         )}
+                                        onClick={() => onEdit(journal.id)}
                                     >
                                         Edit
-                                    </a>
+                                    </button>
                                 )}
                             </Menu.Item>
                             <Menu.Item>
                                 {({ active }) => (
-                                    <a
-                                        href="/"
+                                    <button
                                         className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
+                                            active ? 'bg-gray-100 text-gray-900 w-full text-left' : 'text-gray-700',
+                                            'block px-4 py-2 text-sm w-full text-left'
                                         )}
+                                        onClick={() => onDelete(journal.id)}
                                     >
-                                        Cancel
-                                    </a>
+                                        Delete
+                                    </button>
                                 )}
                             </Menu.Item>
                         </div>
@@ -294,7 +359,7 @@ function Meeting({ meeting }) {
 }
 
 // Array mapping days to their corresponding column start classes
-let colStartClasses = [
+const colStartClasses = [
     '',
     'col-start-2',
     'col-start-3',
