@@ -4,9 +4,9 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 import App from './App';
-import Todo from './components/Todo';
-import Calendar from './components/Calendar';
-import Journals from './components/Journals';
+import Todo from './pages/Todo';
+import Calendar from './pages/Calendar';
+import Journals from './pages/Journals';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
