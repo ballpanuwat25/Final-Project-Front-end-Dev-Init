@@ -18,7 +18,7 @@ import {
 } from 'date-fns'
 
 import Sidebar, { SidebarItem } from '../components/Sidebar';
-import { LayoutDashboard, ListTodo, CalendarDays, NotebookPen } from 'lucide-react';
+import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen } from 'lucide-react';
 
 // Utility function to concatenate CSS class names conditionally
 function classNames(...classes) {
@@ -26,7 +26,7 @@ function classNames(...classes) {
 }
 
 // Calendar component
-export default function Calendar() {
+export default function Schedule() {
     const [meetings, setMeetings] = useState([])
 
     useEffect(() => {
@@ -153,14 +153,14 @@ export default function Calendar() {
             <Sidebar>
                 <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={false} path={"/"} />
                 <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={false} alert={true} path={"/todo"} />
-                <SidebarItem icon={<CalendarDays size={20} />} text="Schedule" active={true} alert={false} path={"/calendar"} />
+                <SidebarItem icon={<CalendarCheck size={20} />} text="Schedule" active={true} alert={false} path={"/schedule"} />
                 <SidebarItem icon={<NotebookPen size={20} />} text="DailyJournal" active={false} alert={false} path={"/journal"} />
             </Sidebar>
 
             <div className="flex-1 p-4">
-                <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
-                    <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
-                        <div className="md:pr-14">
+                <div className="max-w-md px-4 mx-auto sm:px-7 lg:max-w-4xl lg:px-6">
+                    <div className="lg:grid lg:grid-cols-2 lg:divide-x lg:divide-gray-200">
+                        <div className="lg:pr-14">
                             <div className="flex items-center">
                                 <h2 className="flex-auto font-semibold text-primary">
                                     {format(firstDayCurrentMonth, 'MMMM yyyy')}
@@ -252,7 +252,7 @@ export default function Calendar() {
                             </div>
                         </div>
 
-                        <section className="mt-12 md:mt-0 md:pl-14">
+                        <section className="mt-12 lg:mt-0 lg:pl-14">
                             <h2 className="font-semibold text-gray-900">
                                 Schedule for{' '}
                                 <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>

@@ -1,13 +1,57 @@
 import { ChevronLast, ChevronFirst } from "lucide-react"
-import { useContext, createContext, useState } from "react"
+import { useContext, createContext, useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import ThemeController from "./ThemeController";
 
 const SidebarContext = createContext()
 
 export default function Sidebar({ children }) {
-    const [expanded, setExpanded] = useState(true)
+    const [expanded, setExpanded] = useState(() => {
+        const storedExpanded = localStorage.getItem("expanded");
+        return storedExpanded !== null ? JSON.parse(storedExpanded) : window.innerWidth > 768;
+    });
 
+    useEffect(() => {
+        const storedExpanded = localStorage.getItem("expanded");
+        if (storedExpanded !== null && expanded !== JSON.parse(storedExpanded)) {
+            setExpanded(JSON.parse(storedExpanded));
+        }
+
+        // Check screen width and update state if necessary
+        const handleResize = () => {
+            const screenWidth = window.innerWidth;
+            if (screenWidth <= 768 && expanded !== false) {
+                setExpanded(false);
+                localStorage.setItem("expanded", JSON.stringify(false));
+            } else if (screenWidth > 768 && expanded !== true) {
+                setExpanded(true);
+                localStorage.setItem("expanded", JSON.stringify(true));
+            }
+        };
+
+        // Attach event listener for window resize
+        window.addEventListener("resize", handleResize);
+
+        // Cleanup event listener on component unmount
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, [expanded]);
+
+    const toggleSidebar = () => {
+        const screenWidth = window.innerWidth;
+        if (screenWidth < 768) {
+            setExpanded(false);
+            localStorage.setItem("expanded", JSON.stringify(false));
+        } else {
+            setExpanded((prevExpanded) => {
+                const newExpanded = !prevExpanded;
+                localStorage.setItem("expanded", JSON.stringify(newExpanded));
+                return newExpanded;
+            });
+        }
+    };
+    
     return (
         <aside className="h-screen">
             <nav className="h-full flex flex-col border-r shadow-sm">
@@ -17,7 +61,7 @@ export default function Sidebar({ children }) {
                         PMI Web Applicaion
                     </h1>
                     <button
-                        onClick={() => setExpanded((curr) => !curr)}
+                        onClick={() => toggleSidebar()}
                         className="p-1.5 rounded-lg bg-primary text-primary-content"
                     >
                         {expanded ? <ChevronFirst /> : <ChevronLast />}
@@ -32,6 +76,7 @@ export default function Sidebar({ children }) {
                     <ThemeController expanded={expanded} />
                 </div>
             </nav>
+            
         </aside>
     )
 }

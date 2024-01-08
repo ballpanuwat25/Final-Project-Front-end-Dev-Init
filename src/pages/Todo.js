@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar, { SidebarItem } from '../components/Sidebar';
-import { LayoutDashboard, ListTodo, CalendarDays, NotebookPen } from 'lucide-react';
+import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen } from 'lucide-react';
+
+import Calendar from '../components/Calendar';
 
 const Todo = () => {
     const [tasks, setTasks] = useState([]);
@@ -8,7 +10,6 @@ const Todo = () => {
     const [taskName, setTaskName] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
     const [taskStatus, setTaskStatus] = useState('');
-    const [taskDueDate, setTaskDueDate] = useState('');
     const [taskCategory, setTaskCategory] = useState('');
 
     const [editingTask, setEditingTask] = useState(null);
@@ -26,7 +27,7 @@ const Todo = () => {
             taskName: taskName,
             taskDescription: taskDescription,
             taskStatus: taskStatus,
-            taskDueDate: taskDueDate,
+            taskDueDate: selectedDayFromCalendar,
             taskCategory: taskCategory
         }];
 
@@ -34,7 +35,6 @@ const Todo = () => {
         setTaskName('');
         setTaskDescription('');
         setTaskStatus('');
-        setTaskDueDate('');
         setTaskCategory('');
 
         localStorage.setItem('tasks', JSON.stringify(updatedTasks));
@@ -77,45 +77,56 @@ const Todo = () => {
         return [day, month, year].join('/')
     }
 
+    const [selectedDayFromCalendar, setSelectedDayFromCalendar] = useState(null);
+
+    const handleSelectedDayChange = (day) => {
+        setSelectedDayFromCalendar(day);
+    };
+
     return (
         <div className="flex">
             <Sidebar>
                 <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={false} path={"/"} />
                 <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={true} alert={true} path={"/todo"} />
-                <SidebarItem icon={<CalendarDays size={20} />} text="Schedule" active={false} alert={false} path={"/calendar"} />
+                <SidebarItem icon={<CalendarCheck size={20} />} text="Schedule" active={false} alert={false} path={"/schedule"} />
                 <SidebarItem icon={<NotebookPen size={20} />} text="DailyJournal" active={false} alert={false} path={"/journal"} />
             </Sidebar>
 
             <div className="flex-1 p-4">
-                <h1>Todo List</h1>
-                <input
-                    type="text"
-                    placeholder="Enter a task name"
-                    value={taskName}
-                    onChange={(e) => setTaskName(e.target.value)}
-                /> <br />
+                <h1 className='text-xl font-bold'>My Tasks</h1>
 
-                <input
-                    type="text"
-                    placeholder="Enter a task desc"
-                    value={taskDescription}
-                    onChange={(e) => setTaskDescription(e.target.value)}
-                /> <br />
+                <div className="divider my-2" />
 
-                <input
-                    type="text"
-                    placeholder="Enter a task cate"
-                    value={taskCategory}
-                    onChange={(e) => setTaskCategory(e.target.value)}
-                /> <br />
+                <div className="flex flex-col gap-2">
+                    <input
+                        type="text"
+                        placeholder="Enter a task name"
+                        value={taskName}
+                        onChange={(e) => setTaskName(e.target.value)}
+                        className="input input-bordered input-primary w-full"
+                    />
 
-                <input
-                    type="date"
-                    value={taskDueDate}
-                    onChange={(e) => setTaskDueDate(e.target.value)}
-                /> <br />
+                    <input
+                        type="text"
+                        placeholder="Enter a task desc"
+                        value={taskDescription}
+                        onChange={(e) => setTaskDescription(e.target.value)}
+                        className="input input-bordered input-primary w-full"
+                    />
 
-                <button onClick={addTask}>Add Task</button>
+                    <input
+                        type="text"
+                        placeholder="Enter a task cate"
+                        value={taskCategory}
+                        onChange={(e) => setTaskCategory(e.target.value)}
+                        className="input input-bordered input-primary w-full"
+                    />
+
+                    <Calendar onSelectedDayChange={handleSelectedDayChange} />
+
+                    <button className='btn btn-neutral' onClick={addTask}>Add Task</button>
+                </div>
+
                 <ul>
                     {tasks.map((task) => (
                         <li key={task.taskId}>
