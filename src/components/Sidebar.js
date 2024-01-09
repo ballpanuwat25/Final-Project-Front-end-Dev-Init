@@ -19,11 +19,11 @@ export default function Sidebar({ children }) {
 
         // Check screen width and update state if necessary
         const handleResize = () => {
-            const screenWidth = window.innerWidth;
-            if (screenWidth <= 768 && expanded !== false) {
+            const screenWidth = window.screen.width;
+            if (screenWidth <= 780 && expanded !== false) {
                 setExpanded(false);
                 localStorage.setItem("expanded", JSON.stringify(false));
-            } else if (screenWidth > 768 && expanded !== true) {
+            } else if (screenWidth > 780 && expanded !== true) {
                 setExpanded(true);
                 localStorage.setItem("expanded", JSON.stringify(true));
             }

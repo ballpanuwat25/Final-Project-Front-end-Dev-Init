@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar, { SidebarItem } from '../components/Sidebar';
-import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen } from 'lucide-react';
+import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen, ChevronDown, ChevronUp } from 'lucide-react';
 
 import Calendar from '../components/Calendar';
+import { formatDate } from '../utils/dateUtils';
 
-const Todo = () => {
+import { startOfToday } from 'date-fns';
+
+export default function Todo() {
     const [tasks, setTasks] = useState([]);
 
     const [taskName, setTaskName] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
     const [taskStatus, setTaskStatus] = useState('');
-    const [taskCategory, setTaskCategory] = useState('');
+    const [taskPriority, setTaskPriority] = useState('');
 
     const [editingTask, setEditingTask] = useState(null);
 
@@ -27,15 +30,15 @@ const Todo = () => {
             taskName: taskName,
             taskDescription: taskDescription,
             taskStatus: taskStatus,
-            taskDueDate: selectedDayFromCalendar,
-            taskCategory: taskCategory
+            taskDueDate: selectedDayFromCalendar ? selectedDayFromCalendar : startOfToday(),
+            taskPriority: taskPriority
         }];
 
         setTasks(updatedTasks);
         setTaskName('');
         setTaskDescription('');
         setTaskStatus('');
-        setTaskCategory('');
+        setTaskPriority('');
 
         localStorage.setItem('tasks', JSON.stringify(updatedTasks));
     };
@@ -63,24 +66,14 @@ const Todo = () => {
         localStorage.setItem('tasks', JSON.stringify(updatedTasks));
     };
 
-    const formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = '' + d.getFullYear()
-
-        if (month.length < 2)
-            month = '0' + month
-        if (day.length < 2)
-            day = '0' + day
-
-        return [day, month, year].join('/')
-    }
-
     const [selectedDayFromCalendar, setSelectedDayFromCalendar] = useState(null);
 
     const handleSelectedDayChange = (day) => {
         setSelectedDayFromCalendar(day);
+    };
+
+    const handleOptionChange = (value) => {
+        setTaskPriority(value);
     };
 
     return (
@@ -114,13 +107,7 @@ const Todo = () => {
                         className="input input-bordered input-primary w-full"
                     />
 
-                    <input
-                        type="text"
-                        placeholder="Enter a task cate"
-                        value={taskCategory}
-                        onChange={(e) => setTaskCategory(e.target.value)}
-                        className="input input-bordered input-primary w-full"
-                    />
+                    <SelectOption onSelectOptionChange={handleOptionChange} />
 
                     <Calendar onSelectedDayChange={handleSelectedDayChange} />
 
@@ -146,8 +133,8 @@ const Todo = () => {
 
                                     <input
                                         type="text"
-                                        value={editingTask.taskCategory}
-                                        onChange={(e) => setEditingTask({ ...editingTask, taskCategory: e.target.value })}
+                                        value={editingTask.taskPriority}
+                                        onChange={(e) => setEditingTask({ ...editingTask, taskPriority: e.target.value })}
                                     /> <br />
 
                                     <input
@@ -160,7 +147,8 @@ const Todo = () => {
                                 </>
                             ) : (
                                 <>
-                                    {task.taskName} | {task.taskDescription} | {task.taskCategory} | {formatDate(task.taskDueDate)}
+                                    <input type="checkbox" className="checkbox" /> 
+                                    {task.taskName} | {task.taskDescription} | {task.taskPriority} | {formatDate(task.taskDueDate)}
                                     <button onClick={() => startEditing(task.taskId)}>Edit</button>
                                     <button onClick={() => deleteTask(task.taskId)}>Delete</button>
                                 </>
@@ -173,4 +161,84 @@ const Todo = () => {
     );
 };
 
-export default Todo;
+const SelectOption = ({ onSelectOptionChange }) => {
+    const [selectedOption, setSelectedOption] = useState('');
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const handleOptionChange = (value) => {
+        setSelectedOption(value);
+        setDropdownOpen(false);
+    };
+
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
+
+    return (
+        <div className="relative inline-block text-left">
+            <button
+                type="button"
+                className="inline-flex justify-between w-full btn btn-outline btn-primary px-4 py-2 text-sm leading-5 font-medium"
+                id="options-menu"
+                aria-haspopup="true"
+                aria-expanded="true"
+                onClick={toggleDropdown}
+            >
+                {selectedOption || 'Select Priority'}
+                {dropdownOpen ? (
+                    <ChevronUp className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
+                ) : (
+                    <ChevronDown className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
+                )}
+            </button>
+
+            {dropdownOpen && (
+                <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
+                    <div className="rounded-md bg-white border border-gray-200 dark:border-dark-5">
+                        <div className="py-1">
+                            <label className="flex items-center px-4 py-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    className="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                    value="low"
+                                    checked={selectedOption === 'low'}
+                                    onChange={() => {
+                                        handleOptionChange('low')
+                                        onSelectOptionChange('low')
+                                    }}
+                                />
+                                <span className="ml-2 text-sm">Low</span>
+                            </label>
+                            <label className="flex items-center px-4 py-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    className="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                    value="medium"
+                                    checked={selectedOption === 'medium'}
+                                    onChange={() => {
+                                        handleOptionChange('medium')
+                                        onSelectOptionChange('medium')
+                                    }}
+                                />
+                                <span className="ml-2 text-sm">Medium</span>
+                            </label>
+                            <label className="flex items-center px-4 py-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    className="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                    value="high"
+                                    checked={selectedOption === 'high'}
+                                    onChange={() => {
+                                        handleOptionChange('high')
+                                        onSelectOptionChange('high')
+                                    }}
+                                />
+                                <span className="ml-2 text-sm">High</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
