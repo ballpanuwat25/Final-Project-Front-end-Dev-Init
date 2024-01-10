@@ -1,5 +1,5 @@
 // Column.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 
 import Task from './Task';
@@ -17,6 +17,10 @@ const Column = ({
     const [isEditing, setIsEditing] = useState(false);
     const [newColumnName, setNewColumnName] = useState(column.title);
     const [newTaskContent, setNewTaskContent] = useState('');
+
+    useEffect(() => {
+        setNewColumnName(column.title);
+    }, [column.title]);
 
     const handleEditClick = () => {
         setIsEditing(true);

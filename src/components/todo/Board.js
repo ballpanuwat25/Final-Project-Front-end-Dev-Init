@@ -1,5 +1,5 @@
 // Board.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import Columns from './Columns';
@@ -7,8 +7,8 @@ import Columns from './Columns';
 const Board = () => {
     const initialData = {
         tasks: {
-            task1: { id: 'task1', content: 'Task 1' },
-            task2: { id: 'task2', content: 'Task 2' },
+            task1: { id: 'task1', content: 'Task 1', dueDate: '2024-01-15', priority: 'High' },
+            task2: { id: 'task2', content: 'Task 2', dueDate: '2024-01-18', priority: 'Medium' },
             // Add more tasks as needed
         },
         columns: {
@@ -22,12 +22,27 @@ const Board = () => {
                 title: 'In Progress',
                 taskIds: [],
             },
-            // Add more columns as needed
+            column3: {
+                id: 'column3',
+                title: 'Done',
+                taskIds: [],
+            },
         },
-        columnOrder: ['column1', 'column2'],
+        columnOrder: ['column1', 'column2', 'column3'],
     };
 
     const [data, setData] = useState(initialData);
+
+    useEffect(() => {
+        const storedData = localStorage.getItem('kanbanData');
+        if (storedData) {
+            setData(JSON.parse(storedData));
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('kanbanData', JSON.stringify(data));
+    }, [data]);
 
     const onDragEnd = (result) => {
         const { destination, source, draggableId, type } = result;
@@ -151,12 +166,14 @@ const Board = () => {
         setData(newData);
     };
 
-    const addNewTask = (columnId, content) => {
+    const addNewTask = (columnId, content, dueDate, priority) => {
         const newTaskId = `task${Object.keys(data.tasks).length + 1}`;
 
         const newTask = {
             id: newTaskId,
             content: content || `New Task ${Object.keys(data.tasks).length + 1}`,
+            dueDate: dueDate || '',
+            priority: priority || 'Low',
         };
 
         const newColumns = {
@@ -181,12 +198,14 @@ const Board = () => {
         setData(newData);
     };
 
-    const editTaskContent = (taskId, newContent) => {
+    const editTaskContent = (taskId, newContent, newDueDate, newPriority) => {
         const newTasks = {
             ...data.tasks,
             [taskId]: {
                 ...data.tasks[taskId],
                 content: newContent,
+                dueDate: newDueDate,
+                priority: newPriority,
             },
         };
 
