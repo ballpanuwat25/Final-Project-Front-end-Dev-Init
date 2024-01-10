@@ -19,6 +19,14 @@ const Board = () => {
         setTasks([...tasks, newTask]);
     };
 
+    const editTask = (taskId, newTitle) => {
+        setTasks(tasks.map((task) => (task.id === taskId ? { ...task, title: newTitle } : task)));
+    };
+
+    const deleteTask = (taskId) => {
+        setTasks(tasks.filter((task) => task.id !== taskId));
+    };
+
     const addColumn = () => {
         const newColumn = { id: columns.length + 1, title: `New Column` };
         setColumns([...columns, newColumn]);
@@ -60,6 +68,8 @@ const Board = () => {
                         column={column}
                         tasks={tasks}
                         onAddTask={addTask}
+                        onEditTask={editTask}
+                        onDeleteTask={deleteTask}
                         onDeleteColumn={deleteColumn}
                         onEditColumnName={editColumnName}
                         onMoveTask={moveTask}
