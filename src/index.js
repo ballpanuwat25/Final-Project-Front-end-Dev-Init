@@ -7,6 +7,7 @@ import App from './App';
 import Todo from './pages/Todo';
 import Schedule from './pages/Schedule';
 import Journals from './pages/Journals';
+import Test from './pages/Test';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
     path: '/journal',
     element: <Journals />,
   },
+  {
+    path: 'test',
+    element: <Test />,
+  }
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(

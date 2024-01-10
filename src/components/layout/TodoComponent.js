@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { formatDate } from "../../utils/dateUtils";
-
 import { isToday } from 'date-fns';
 
 function TodoComponent() {
@@ -24,26 +23,37 @@ function TodoComponent() {
         setTasks(updatedTasks);
     };
 
+    const checkTask = () => {
+        const todayTasks = tasks.filter(task => isToday(new Date(task.taskDueDate)));
+        return todayTasks.length > 0;
+    }
+
     return (
         <div className="w-full h-full flex flex-col gap-2">
             <div className="h-full flex flex-col p-2 gap-2 lg:p-4 lg:gap-4">
                 <h1 className="font-bold text-2xl">To-Do in Today!</h1>
                 <div className="w-full h-full flex flex-col gap-2">
-                    {tasks.map((task) => (
-                        <div key={task.taskId}>
-                            <button
-                                className="btn btn-neutral w-full inline-flex justify-start items-center"
-                                onClick={() => taskCompleted(task.taskId)}
-                            >
-                                <input
-                                    type="checkbox"
-                                    className="checkbox checkbox-secondary checkbox-sm mr-2"
-                                    checked={task.taskStatus === "completed"}
-                                />
-                                {task.taskName} | {task.taskDescription} | {task.taskPriority} | {formatDate(task.taskDueDate)}
-                            </button>
-                        </div>
-                    ))}
+                    {checkTask() ? (
+                        tasks.map((task) => (
+                            <div key={task.taskId}>
+                                <button
+                                    className="btn btn-neutral w-full inline-flex justify-start items-center"
+                                    onClick={() => taskCompleted(task.taskId)}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        className="checkbox checkbox-secondary checkbox-sm mr-2"
+                                        checked={task.taskStatus === "completed"}
+                                    />
+                                    {task.taskName} | {task.taskDescription} | {task.taskPriority} | {formatDate(task.taskDueDate)}
+                                </button>
+                            </div>
+                        ))
+                    ) : (
+                        <>
+                            <p className="text-sm">No tasks for today!</p>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

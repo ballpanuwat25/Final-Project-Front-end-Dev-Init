@@ -14,8 +14,9 @@ export default function Todo() {
     const [taskDescription, setTaskDescription] = useState('');
     const [taskStatus, setTaskStatus] = useState('');
     const [taskPriority, setTaskPriority] = useState('');
-
     const [editingTask, setEditingTask] = useState(null);
+
+    const [columns, setColumns] = useState(['todo', 'in-progress', 'done']);
 
     useEffect(() => {
         // Load tasks from local storage on component mount
@@ -31,7 +32,7 @@ export default function Todo() {
             taskDescription: taskDescription,
             taskStatus: taskStatus,
             taskDueDate: selectedDayFromCalendar ? selectedDayFromCalendar : startOfToday(),
-            taskPriority: taskPriority
+            taskPriority: taskPriority,
         }];
 
         setTasks(updatedTasks);
@@ -85,77 +86,103 @@ export default function Todo() {
                 <SidebarItem icon={<NotebookPen size={20} />} text="DailyJournal" active={false} alert={false} path={"/journal"} />
             </Sidebar>
 
-            <div className="flex-1 p-4">
-                <h1 className='text-xl font-bold'>My Tasks</h1>
+            <div className="flex-1 p-4 overflow-scroll">
+                <div className='w-full flex justify-between items-center'>
+                    <h1 className='text-xl font-bold'>My Tasks</h1>
+
+                    <button className="btn btn-neutral btn-sm" onClick={() => document.getElementById('add_tasks').showModal()}>+ Add Tasks</button>
+                    <dialog id="add_tasks" className="modal">
+                        <div className="modal-box">
+
+                            <div className="flex flex-col gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Enter a task name"
+                                    value={taskName}
+                                    onChange={(e) => setTaskName(e.target.value)}
+                                    className="input input-bordered input-primary w-full"
+                                />
+
+                                <input
+                                    type="text"
+                                    placeholder="Enter a task desc"
+                                    value={taskDescription}
+                                    onChange={(e) => setTaskDescription(e.target.value)}
+                                    className="input input-bordered input-primary w-full"
+                                />
+
+                                <div className='flex w-full gap-2'>
+                                    <SelectOption onSelectOptionChange={handleOptionChange} />
+
+                                    <Calendar onSelectedDayChange={handleSelectedDayChange} />
+                                </div>
+
+                                <button className='btn btn-neutral' onClick={addTask}>Add Task</button>
+                            </div>
+
+                            <div className="modal-action">
+                                <form method="dialog">
+                                    <button className="btn">Close</button>
+                                </form>
+                            </div>
+                        </div>
+                    </dialog>
+                </div>
 
                 <div className="divider my-2" />
 
-                <div className="flex flex-col gap-2">
-                    <input
-                        type="text"
-                        placeholder="Enter a task name"
-                        value={taskName}
-                        onChange={(e) => setTaskName(e.target.value)}
-                        className="input input-bordered input-primary w-full"
-                    />
+                <div className='flex flex-row gap-4'>
+                    {columns.map((column) => (
+                        <div key={column} className="bg-red-400 h-full w-72 rounded">
+                            <h2 className="text-lg font-bold">{column}</h2>
 
-                    <input
-                        type="text"
-                        placeholder="Enter a task desc"
-                        value={taskDescription}
-                        onChange={(e) => setTaskDescription(e.target.value)}
-                        className="input input-bordered input-primary w-full"
-                    />
+                            <div className="divider my-2" />
 
-                    <SelectOption onSelectOptionChange={handleOptionChange} />
+                            <ul>
+                                {tasks.map((task) => (
+                                    <li key={task.taskId}>
+                                        {editingTask && editingTask.taskId === task.taskId ? (
+                                            <>
+                                                <input
+                                                    type="text"
+                                                    value={editingTask.taskName}
+                                                    onChange={(e) => setEditingTask({ ...editingTask, taskName: e.target.value })}
+                                                /> <br />
 
-                    <Calendar onSelectedDayChange={handleSelectedDayChange} />
+                                                <input
+                                                    type="text"
+                                                    value={editingTask.taskDescription}
+                                                    onChange={(e) => setEditingTask({ ...editingTask, taskDescription: e.target.value })}
+                                                /> <br />
 
-                    <button className='btn btn-neutral' onClick={addTask}>Add Task</button>
-                </div>
+                                                <input
+                                                    type="text"
+                                                    value={editingTask.taskPriority}
+                                                    onChange={(e) => setEditingTask({ ...editingTask, taskPriority: e.target.value })}
+                                                /> <br />
 
-                <ul>
-                    {tasks.map((task) => (
-                        <li key={task.taskId}>
-                            {editingTask && editingTask.taskId === task.taskId ? (
-                                <>
-                                    <input
-                                        type="text"
-                                        value={editingTask.taskName}
-                                        onChange={(e) => setEditingTask({ ...editingTask, taskName: e.target.value })}
-                                    /> <br />
+                                                <input
+                                                    type="date"
+                                                    value={editingTask.taskDueDate}
+                                                    onChange={(e) => setEditingTask({ ...editingTask, taskDueDate: e.target.value })}
+                                                /> <br />
 
-                                    <input
-                                        type="text"
-                                        value={editingTask.taskDescription}
-                                        onChange={(e) => setEditingTask({ ...editingTask, taskDescription: e.target.value })}
-                                    /> <br />
-
-                                    <input
-                                        type="text"
-                                        value={editingTask.taskPriority}
-                                        onChange={(e) => setEditingTask({ ...editingTask, taskPriority: e.target.value })}
-                                    /> <br />
-
-                                    <input
-                                        type="date"
-                                        value={editingTask.taskDueDate}
-                                        onChange={(e) => setEditingTask({ ...editingTask, taskDueDate: e.target.value })}
-                                    /> <br />
-
-                                    <button onClick={finishEditing}>Save</button>
-                                </>
-                            ) : (
-                                <>
-                                    <input type="checkbox" className="checkbox" /> 
-                                    {task.taskName} | {task.taskDescription} | {task.taskPriority} | {formatDate(task.taskDueDate)}
-                                    <button onClick={() => startEditing(task.taskId)}>Edit</button>
-                                    <button onClick={() => deleteTask(task.taskId)}>Delete</button>
-                                </>
-                            )}
-                        </li>
+                                                <button onClick={finishEditing}>Save</button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <input type="checkbox" className="checkbox" />
+                                                {task.taskName} | {task.taskDescription} | {task.taskPriority} | {formatDate(task.taskDueDate)}
+                                                <button onClick={() => startEditing(task.taskId)}>Edit</button>
+                                                <button onClick={() => deleteTask(task.taskId)}>Delete</button>
+                                            </>
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     ))}
-                </ul>
+                </div>
             </div>
         </div>
     );
@@ -175,7 +202,7 @@ const SelectOption = ({ onSelectOptionChange }) => {
     };
 
     return (
-        <div className="relative inline-block text-left">
+        <div className="relative inline-block text-left w-full">
             <button
                 type="button"
                 className="inline-flex justify-between w-full btn btn-outline btn-primary px-4 py-2 text-sm leading-5 font-medium"
