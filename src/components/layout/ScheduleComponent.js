@@ -58,7 +58,7 @@ export default function ScheduleComponent() {
     }
 
     return (
-        <div className="w-full flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
             <h1 className='font-bold md:text-sm lg:text-2xl'>Schedule for{' '}
                 <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
                 {format(selectedDay, 'MMM dd, yyy')}

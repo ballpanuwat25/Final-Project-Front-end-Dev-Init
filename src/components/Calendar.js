@@ -49,12 +49,12 @@ export default function Calendar({ onSelectedDayChange }) {
     // JSX structure for the calendar
     return (
         <div className="w-full">
-            <button className="btn btn-outline btn-primary w-full" onClick={() => document.getElementById('my_modal_1').showModal()}>
+            <button className="btn btn-outline btn-primary w-full" onClick={() => document.getElementById('calendar').showModal()}>
                 <CalendarDays size={20} />
                 Due to
             </button>
 
-            <dialog id="my_modal_1" className="modal">
+            <dialog id="calendar" className="modal">
                 <div className="modal-box">
                     <div className="max-w-md px-4 mx-auto">
                         <>
@@ -102,7 +102,7 @@ export default function Calendar({ onSelectedDayChange }) {
                                             type="button"
                                             onClick={() => {
                                                 setSelectedDay(day);
-                                                onSelectedDayChange(day); // Call the callback function
+                                                onSelectedDayChange(day);
                                             }}
                                             className={classNames(
                                                 isEqual(day, selectedDay) && 'text-white',

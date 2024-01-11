@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar, { SidebarItem } from '../components/Sidebar';
-import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+    LayoutDashboard,
+    ListTodo,
+    CalendarCheck,
+    NotebookPen,
+    ChevronDown, ChevronUp,
+    ChevronsDown, ChevronsRight, ChevronsUp,
+    Pencil, Trash
+} from 'lucide-react';
 
 import Calendar from '../components/Calendar';
 import { formatDate } from '../utils/dateUtils';
@@ -14,12 +22,11 @@ export default function Todo() {
     const [taskDescription, setTaskDescription] = useState('');
     const [taskStatus, setTaskStatus] = useState('');
     const [taskPriority, setTaskPriority] = useState('');
-    const [editingTask, setEditingTask] = useState(null);
 
-    const [columns, setColumns] = useState(['todo', 'in-progress', 'done']);
+    const [searchInput, setSearchInput] = useState('');
+    const [filteredTasks, setFilteredTasks] = useState([]);
 
     useEffect(() => {
-        // Load tasks from local storage on component mount
         const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
         setTasks(savedTasks);
     }, []);
@@ -30,7 +37,7 @@ export default function Todo() {
             taskId: Date.now(),
             taskName: taskName,
             taskDescription: taskDescription,
-            taskStatus: taskStatus,
+            taskStatus: "Uncompleted",
             taskDueDate: selectedDayFromCalendar ? selectedDayFromCalendar : startOfToday(),
             taskPriority: taskPriority,
         }];
@@ -38,31 +45,54 @@ export default function Todo() {
         setTasks(updatedTasks);
         setTaskName('');
         setTaskDescription('');
-        setTaskStatus('');
         setTaskPriority('');
 
         localStorage.setItem('tasks', JSON.stringify(updatedTasks));
     };
 
-    const deleteTask = (taskId) => {
-        const updatedTasks = tasks.filter((task) => task.taskId !== taskId);
-        setTasks(updatedTasks);
+    const [selectedTaskId, setSelectedTaskId] = useState(null);
+    const [editingTaskName, setEditingTaskName] = useState('');
+    const [editingTaskDescription, setEditingTaskDescription] = useState('');
 
-        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    const editTask = (taskId) => {
+        const task = tasks.find((task) => task.taskId === taskId);
+        setSelectedTaskId(taskId);
+        setEditingTaskName(task.taskName);
+        setEditingTaskDescription(task.taskDescription);
+        setTaskStatus(task.taskStatus);
+        setTaskPriority(task.taskPriority);
+
+        document.getElementById('edit_tasks').showModal();
     };
 
-    const startEditing = (taskId) => {
-        const taskToEdit = tasks.find((task) => task.taskId === taskId);
-        setEditingTask(taskToEdit);
-    };
-
-    const finishEditing = () => {
+    const updateTask = () => {
         const updatedTasks = tasks.map((task) =>
-            task.taskId === editingTask.taskId ? editingTask : task
+            task.taskId === selectedTaskId
+                ? {
+                    ...task,
+                    taskName: editingTaskName,
+                    taskDescription: editingTaskDescription,
+                    taskStatus,
+                    taskDueDate: selectedDayFromCalendar ? selectedDayFromCalendar : startOfToday(),
+                    taskPriority,
+                }
+                : task
         );
 
         setTasks(updatedTasks);
-        setEditingTask(null);
+        setTaskName('');
+        setTaskDescription('');
+        setTaskStatus('');
+        setTaskPriority('');
+        setSelectedTaskId(null);
+
+        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+        document.getElementById('edit_tasks').close();
+    };
+
+    const deleteTask = (taskId) => {
+        const updatedTasks = tasks.filter((task) => task.taskId !== taskId);
+        setTasks(updatedTasks);
 
         localStorage.setItem('tasks', JSON.stringify(updatedTasks));
     };
@@ -77,8 +107,61 @@ export default function Todo() {
         setTaskPriority(value);
     };
 
+    const handleSearchInputChange = (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        setSearchInput(searchTerm);
+
+        const filtered = tasks.filter(
+            (task) =>
+                task.taskName.toLowerCase().includes(searchTerm) ||
+                task.taskDescription.toLowerCase().includes(searchTerm)
+        );
+
+        setFilteredTasks(filtered);
+    };
+
+    const taskCompleted = (taskId) => {
+        const updatedTasks = tasks.map((task) => {
+            if (task.taskId === taskId) {
+                task.taskStatus = task.taskStatus === "Completed" ? "Uncompleted" : "Completed";
+            }
+            return task;
+        });
+
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+        setTasks(updatedTasks);
+    };
+
+    const checkPriorityClass = (priority) => {
+        if (priority === 'Low') {
+            return 'badge badge-success badge-outline';
+        } else if (priority === 'Medium') {
+            return 'badge badge-warning badge-outline';
+        } else if (priority === 'High') {
+            return 'badge badge-error badge-outline';
+        }
+    };
+
+    const checkPriorityIcon = (priority) => {
+        if (priority === 'Low') {
+            return <ChevronsDown size={20} />;
+        } else if (priority === 'Medium') {
+            return <ChevronsRight size={20} />;
+        } else if (priority === 'High') {
+            return <ChevronsUp size={20} />;
+        }
+    };
+
+    const checkStatusClass = (status) => {
+        if (status === 'Completed') {
+            return 'font-bold text-success';
+        } else {
+            return 'font-bold text-error';
+        }
+    };
+
     return (
-        <div className="flex">
+        <div className="flex h-screen">
             <Sidebar>
                 <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={false} path={"/"} />
                 <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={true} alert={true} path={"/todo"} />
@@ -88,7 +171,7 @@ export default function Todo() {
 
             <div className="flex-1 p-4 overflow-scroll">
                 <div className='w-full flex justify-between items-center'>
-                    <h1 className='text-xl font-bold'>My Tasks</h1>
+                    <h1 className='text-3xl font-bold'>My Tasks</h1>
 
                     <button className="btn btn-neutral btn-sm" onClick={() => document.getElementById('add_tasks').showModal()}>+ Add Tasks</button>
                     <dialog id="add_tasks" className="modal">
@@ -131,57 +214,99 @@ export default function Todo() {
 
                 <div className="divider my-2" />
 
-                <div className='flex flex-row gap-4'>
-                    {columns.map((column) => (
-                        <div key={column} className="bg-red-400 h-full w-72 rounded">
-                            <h2 className="text-lg font-bold">{column}</h2>
+                <div className='flex flex-col gap-4'>
+                    <input
+                        type="text"
+                        placeholder="Search tasks"
+                        value={searchInput}
+                        onChange={handleSearchInputChange}
+                        className="input input-bordered input-primary w-full"
+                    />
 
-                            <div className="divider my-2" />
+                    <div className="w-full">
+                        <table className='table w-full'>
+                            <thead>
+                                <tr className='text-sm'>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Deadline</th>
+                                    <th>Priority</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
 
-                            <ul>
-                                {tasks.map((task) => (
-                                    <li key={task.taskId}>
-                                        {editingTask && editingTask.taskId === task.taskId ? (
-                                            <>
-                                                <input
-                                                    type="text"
-                                                    value={editingTask.taskName}
-                                                    onChange={(e) => setEditingTask({ ...editingTask, taskName: e.target.value })}
-                                                /> <br />
+                            <tbody>
+                                {(searchInput ? filteredTasks : tasks).map((task) => (
+                                    <tr key={(task.taskId)}>
+                                        <td>
+                                            <input
+                                                type="checkbox"
+                                                className="checkbox checkbox-neutral checkbox-sm mr-2"
+                                                checked={task.taskStatus === "Completed"}
+                                                onClick={() => taskCompleted(task.taskId)}
+                                            />
+                                        </td>
 
-                                                <input
-                                                    type="text"
-                                                    value={editingTask.taskDescription}
-                                                    onChange={(e) => setEditingTask({ ...editingTask, taskDescription: e.target.value })}
-                                                /> <br />
+                                        <td>{task.taskName}</td>
+                                        <td>{task.taskDescription}</td>
+                                        <td className={checkStatusClass(task.taskStatus)}>{task.taskStatus}</td>
+                                        <td>{formatDate(task.taskDueDate)}</td>
+                                        <td>
+                                            <div className={`${checkPriorityClass(task.taskPriority)} flex justify-center items-center pr-1`}>{task.taskPriority} {checkPriorityIcon(task.taskPriority)} </div>
+                                        </td>
 
-                                                <input
-                                                    type="text"
-                                                    value={editingTask.taskPriority}
-                                                    onChange={(e) => setEditingTask({ ...editingTask, taskPriority: e.target.value })}
-                                                /> <br />
+                                        <td className='flex gap-2'>
+                                            <button className="btn btn-sm btn-warning" onClick={() => editTask(task.taskId)}>
+                                                <Pencil size={16} /> Edit
+                                            </button>
 
-                                                <input
-                                                    type="date"
-                                                    value={editingTask.taskDueDate}
-                                                    onChange={(e) => setEditingTask({ ...editingTask, taskDueDate: e.target.value })}
-                                                /> <br />
+                                            <button className="btn btn-sm btn-error" onClick={() => deleteTask(task.taskId)}>
+                                                <Trash size={16} /> Delete
+                                            </button>
+                                        </td>
 
-                                                <button onClick={finishEditing}>Save</button>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <input type="checkbox" className="checkbox" />
-                                                {task.taskName} | {task.taskDescription} | {task.taskPriority} | {formatDate(task.taskDueDate)}
-                                                <button onClick={() => startEditing(task.taskId)}>Edit</button>
-                                                <button onClick={() => deleteTask(task.taskId)}>Delete</button>
-                                            </>
-                                        )}
-                                    </li>
+                                        <dialog id="edit_tasks" className="modal">
+                                            <div className="modal-box">
+                                                <div className="flex flex-col gap-2">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Enter a task name"
+                                                        value={editingTaskName}
+                                                        onChange={(e) => setEditingTaskName(e.target.value)}
+                                                        className="input input-bordered input-primary w-full"
+                                                    />
+
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Enter a task desc"
+                                                        value={editingTaskDescription}
+                                                        onChange={(e) => setEditingTaskDescription(e.target.value)}
+                                                        className="input input-bordered input-primary w-full"
+                                                    />
+
+                                                    <div className='flex w-full gap-2'>
+                                                        <SelectOption onSelectOptionChange={handleOptionChange} />
+
+                                                        <Calendar onSelectedDayChange={handleSelectedDayChange} />
+                                                    </div>
+
+                                                    <button className='btn btn-neutral' onClick={updateTask}>Save</button>
+                                                </div>
+
+                                                <div className="modal-action">
+                                                    <form method="dialog">
+                                                        <button className="btn">Close</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </dialog>
+                                    </tr>
                                 ))}
-                            </ul>
-                        </div>
-                    ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -194,8 +319,9 @@ const SelectOption = ({ onSelectOptionChange }) => {
 
     const handleOptionChange = (value) => {
         setSelectedOption(value);
-        setDropdownOpen(false);
+        onSelectOptionChange(value);
     };
+
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
@@ -221,43 +347,43 @@ const SelectOption = ({ onSelectOptionChange }) => {
 
             {dropdownOpen && (
                 <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
-                    <div className="rounded-md bg-white border border-gray-200 dark:border-dark-5">
+                    <div className="rounded-md bg-base-100 border border-gray-200 dark:border-dark-5">
                         <div className="py-1">
-                            <label className="flex items-center px-4 py-2 cursor-pointer">
+                            <label className="flex items-center px-4 py-2 cursor-pointer hover:bg-base-300">
                                 <input
                                     type="radio"
-                                    className="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                                    value="low"
-                                    checked={selectedOption === 'low'}
+                                    className="hidden"
+                                    value="Low"
+                                    checked={selectedOption === 'Low'}
                                     onChange={() => {
-                                        handleOptionChange('low')
-                                        onSelectOptionChange('low')
+                                        handleOptionChange('Low')
+                                        onSelectOptionChange('Low')
                                     }}
                                 />
                                 <span className="ml-2 text-sm">Low</span>
                             </label>
-                            <label className="flex items-center px-4 py-2 cursor-pointer">
+                            <label className="flex items-center px-4 py-2 cursor-pointer hover:bg-base-300">
                                 <input
                                     type="radio"
-                                    className="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                                    value="medium"
-                                    checked={selectedOption === 'medium'}
+                                    className="hidden"
+                                    value="Medium"
+                                    checked={selectedOption === 'Medium'}
                                     onChange={() => {
-                                        handleOptionChange('medium')
-                                        onSelectOptionChange('medium')
+                                        handleOptionChange('Medium')
+                                        onSelectOptionChange('Medium')
                                     }}
                                 />
                                 <span className="ml-2 text-sm">Medium</span>
                             </label>
-                            <label className="flex items-center px-4 py-2 cursor-pointer">
+                            <label className="flex items-center px-4 py-2 cursor-pointer hover:bg-base-300">
                                 <input
                                     type="radio"
-                                    className="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                                    value="high"
-                                    checked={selectedOption === 'high'}
+                                    className="hidden"
+                                    value="High"
+                                    checked={selectedOption === 'High'}
                                     onChange={() => {
-                                        handleOptionChange('high')
-                                        onSelectOptionChange('high')
+                                        handleOptionChange('High')
+                                        onSelectOptionChange('High')
                                     }}
                                 />
                                 <span className="ml-2 text-sm">High</span>

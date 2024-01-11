@@ -24,11 +24,11 @@ const App = () => {
           </div>
 
           <div className="flex flex-col lg:flex-row w-full h-full gap-4">
-            <div className='bg-primary bg-opacity-50 w-full h-full rounded'>
+            <div className='w-full h-full rounded'>
               <TodoComponent />
             </div>
 
-            <div className='bg-secondary bg-opacity-50 w-full h-full rounded'>
+            <div className='w-full h-full rounded'>
               3
             </div>
           </div>
