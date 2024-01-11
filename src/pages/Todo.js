@@ -171,7 +171,7 @@ export default function Todo() {
 
             <div className="flex-1 p-4 overflow-scroll">
                 <div className='w-full flex justify-between items-center'>
-                    <h1 className='text-3xl font-bold'>My Tasks</h1>
+                    <h1 className='text-lg md:text-3xl font-bold'>My Tasks</h1>
 
                     <button className="btn btn-neutral btn-sm" onClick={() => document.getElementById('add_tasks').showModal()}>+ Add Tasks</button>
                     <dialog id="add_tasks" className="modal">
