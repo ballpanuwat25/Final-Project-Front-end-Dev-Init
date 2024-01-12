@@ -29,7 +29,7 @@ const router = createBrowserRouter([
     element: <Journals />,
   },
   {
-    path: 'test',
+    path: '/test',
     element: <Test />,
   }
 ])

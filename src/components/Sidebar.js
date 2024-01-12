@@ -17,7 +17,6 @@ export default function Sidebar({ children }) {
             setExpanded(JSON.parse(storedExpanded));
         }
 
-        // Check screen width and update state if necessary
         const handleResize = () => {
             const screenWidth = window.screen.width;
             if (screenWidth <= 780 && expanded !== false) {
@@ -29,10 +28,8 @@ export default function Sidebar({ children }) {
             }
         };
 
-        // Attach event listener for window resize
         window.addEventListener("resize", handleResize);
 
-        // Cleanup event listener on component unmount
         return () => {
             window.removeEventListener("resize", handleResize);
         };

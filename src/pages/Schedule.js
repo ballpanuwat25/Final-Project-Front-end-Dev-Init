@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import {
-    add, //Add the specified years, months, weeks, days, hours, minutes and seconds to the given date.
-    eachDayOfInterval, //Return the array of dates within the specified time interval.
-    endOfMonth, //Return the end of a month for the given date. The result will be in the local timezone.
-    startOfWeek, //Return the start of a week for the given date. The result will be in the local timezone.
-    endOfWeek, //Return the end of a week for the given date. The result will be in the local timezone.
-    format, //Return the formatted date string in the given format. The result may vary by locale.
-    getDay, //Get the day of the week of the given date.
-    isEqual, //Are the given dates equal?
-    isSameDay, //Are the given dates in the same day (and year and month)?
-    isSameMonth, //Are the given dates in the same month (and year)?
-    isToday, //Is the given date today?
-    parse, //Return the date parsed from string using the given format string.
-    parseISO, //Parse the given string in ISO 8601 format and return an instance of Date.
-    startOfToday, //Return the start of today.
+    add,
+    eachDayOfInterval,
+    endOfMonth,
+    startOfWeek,
+    endOfWeek,
+    format,
+    getDay,
+    isEqual,
+    isSameDay,
+    isSameMonth,
+    isToday,
+    parse,
+    parseISO,
+    startOfToday,
 } from 'date-fns'
 
 import Sidebar, { SidebarItem } from '../components/Sidebar';
@@ -26,6 +26,13 @@ function classNames(...classes) {
 
 export default function Schedule() {
     const [meetings, setMeetings] = useState([])
+
+    const [notification, setNotification] = useState(null);
+
+    useEffect(() => {
+        const savedNotification = JSON.parse(localStorage.getItem('notification'));
+        setNotification(savedNotification);
+    }, []);
 
     useEffect(() => {
         const savedMeetings = JSON.parse(localStorage.getItem('meetings')) || [];
@@ -129,8 +136,8 @@ export default function Schedule() {
     return (
         <div className="flex h-screen">
             <Sidebar>
-                <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={false} path={"/"} />
-                <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={false} alert={true} path={"/todo"} />
+                <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={notification} path={"/"} />
+                <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={false} alert={false} path={"/todo"} />
                 <SidebarItem icon={<CalendarCheck size={20} />} text="Schedule" active={true} alert={false} path={"/schedule"} />
                 <SidebarItem icon={<NotebookPen size={20} />} text="DailyJournal" active={false} alert={false} path={"/journal"} />
             </Sidebar>
@@ -138,7 +145,7 @@ export default function Schedule() {
             <div className="flex-1 p-4 overflow-scroll">
                 <div className="w-full">
                     <div className='w-full flex justify-between items-center'>
-                        <h1 className='text-lg md:text-3xl font-bold'>Schedule</h1>
+                        <h1 className='text-lg md:text-3xl font-bold'>Schedule 📅</h1>
 
                         <div className="flex items-center">
                             <h2 className="flex-auto font-semibold text-primary text-sm">
@@ -166,8 +173,7 @@ export default function Schedule() {
                     <div className="divider my-2" />
 
                     <>
-
-                        <div className="grid grid-cols-7 py-4 mb-3 text-base text-center text-neutral-content bg-neutral rounded-xl">
+                        <div className="grid grid-cols-7 py-4 mb-3 text-base text-center text-neutral-content bg-neutral rounded-xl font-bold">
                             <div>S</div>
                             <div>M</div>
                             <div>T</div>
@@ -176,6 +182,7 @@ export default function Schedule() {
                             <div>F</div>
                             <div>S</div>
                         </div>
+
                         <div className="grid grid-cols-7 mt-2 text-sm border rounded-xl overflow-hidden">
                             {days.map((day, dayIdx) => (
                                 <div
@@ -217,9 +224,9 @@ export default function Schedule() {
                                             !isEqual(day, selectedDay) && 'hover:bg-base-300',
 
                                             (isEqual(day, selectedDay) || isToday(day)) &&
-                                            'font-semibold',
+                                            'font-bold',
 
-                                            'mx-auto flex h-6 w-6 md:h-8 md:w-8 items-center justify-center rounded-full'
+                                            'mx-auto flex h-6 w-6 md:h-8 md:w-8 items-center justify-center rounded-full text-base'
                                         )}
                                     >
                                         <time dateTime={format(day, 'yyyy-MM-dd')}>
@@ -229,7 +236,7 @@ export default function Schedule() {
 
                                     <dialog id="schedule_modal" className="modal">
                                         <div className="modal-box">
-                                            <div className="space-y-1 text-sm leading-6">
+                                            <div className="text-sm">
                                                 <div className="flex flex-col mb-2 gap-2">
                                                     <input
                                                         type="text"

@@ -7,7 +7,7 @@ import {
     NotebookPen,
     ChevronDown, ChevronUp,
     ChevronsDown, ChevronsRight, ChevronsUp,
-    Pencil, Trash
+    Pencil, Trash, Plus, Clock4
 } from 'lucide-react';
 
 import Calendar from '../components/Calendar';
@@ -25,6 +25,13 @@ export default function Todo() {
 
     const [searchInput, setSearchInput] = useState('');
     const [filteredTasks, setFilteredTasks] = useState([]);
+
+    const [notification, setNotification] = useState(null);
+
+    useEffect(() => {
+        const savedNotification = JSON.parse(localStorage.getItem('notification'));
+        setNotification(savedNotification);
+    }, []);
 
     useEffect(() => {
         const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -163,17 +170,18 @@ export default function Todo() {
     return (
         <div className="flex h-screen">
             <Sidebar>
-                <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={false} path={"/"} />
-                <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={true} alert={true} path={"/todo"} />
+                <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={notification} path={"/"} />
+                <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={true} alert={false} path={"/todo"} />
                 <SidebarItem icon={<CalendarCheck size={20} />} text="Schedule" active={false} alert={false} path={"/schedule"} />
                 <SidebarItem icon={<NotebookPen size={20} />} text="DailyJournal" active={false} alert={false} path={"/journal"} />
             </Sidebar>
 
             <div className="flex-1 p-4 overflow-scroll">
                 <div className='w-full flex justify-between items-center'>
-                    <h1 className='text-lg md:text-3xl font-bold'>My Tasks</h1>
+                    <h1 className='text-lg md:text-3xl font-bold'>My Tasks 🎯</h1>
 
-                    <button className="btn btn-neutral btn-sm" onClick={() => document.getElementById('add_tasks').showModal()}>+ Add Tasks</button>
+                    <button className="btn btn-neutral btn-sm" onClick={() => document.getElementById('add_tasks').showModal()}><Plus size={16} /> Add Tasks</button>
+
                     <dialog id="add_tasks" className="modal">
                         <div className="modal-box">
 
@@ -199,13 +207,16 @@ export default function Todo() {
 
                                     <Calendar onSelectedDayChange={handleSelectedDayChange} />
                                 </div>
-
-                                <button className='btn btn-neutral' onClick={addTask}>Add Task</button>
                             </div>
 
                             <div className="modal-action">
-                                <form method="dialog">
-                                    <button className="btn">Close</button>
+                                <form method="dialog" className='flex w-full gap-2'>
+                                    <div className='w-full'>
+                                        <button className='w-full btn btn-neutral' onClick={addTask}>Add Task</button>
+                                    </div>
+                                    <div className='w-full'>
+                                        <button className="w-full btn">Close</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -220,13 +231,13 @@ export default function Todo() {
                         placeholder="Search tasks"
                         value={searchInput}
                         onChange={handleSearchInputChange}
-                        className="input input-bordered input-primary w-full"
+                        className="input input-bordered border-2 input-primary w-full"
                     />
 
                     <div className="w-full">
                         <table className='table w-full'>
                             <thead>
-                                <tr className='text-sm'>
+                                <tr className='text-base'>
                                     <th></th>
                                     <th>Name</th>
                                     <th>Description</th>
@@ -252,17 +263,22 @@ export default function Todo() {
                                         <td>{task.taskName}</td>
                                         <td>{task.taskDescription}</td>
                                         <td className={checkStatusClass(task.taskStatus)}>{task.taskStatus}</td>
-                                        <td>{formatDate(task.taskDueDate)}</td>
+                                        <td>
+                                            <div className='flex items-center gap-2'>
+                                                <Clock4 size={16} />
+                                                {formatDate(task.taskDueDate)}
+                                            </div>
+                                        </td>
                                         <td>
                                             <div className={`${checkPriorityClass(task.taskPriority)} flex justify-center items-center pr-1`}>{task.taskPriority} {checkPriorityIcon(task.taskPriority)} </div>
                                         </td>
 
                                         <td className='flex gap-2'>
-                                            <button className="btn btn-sm btn-warning" onClick={() => editTask(task.taskId)}>
+                                            <button className="btn btn-sm btn-neutral " onClick={() => editTask(task.taskId)}>
                                                 <Pencil size={16} /> Edit
                                             </button>
 
-                                            <button className="btn btn-sm btn-error" onClick={() => deleteTask(task.taskId)}>
+                                            <button className="btn btn-sm btn-neutral btn-outline" onClick={() => deleteTask(task.taskId)}>
                                                 <Trash size={16} /> Delete
                                             </button>
                                         </td>
@@ -291,13 +307,16 @@ export default function Todo() {
 
                                                         <Calendar onSelectedDayChange={handleSelectedDayChange} />
                                                     </div>
-
-                                                    <button className='btn btn-neutral' onClick={updateTask}>Save</button>
                                                 </div>
 
                                                 <div className="modal-action">
-                                                    <form method="dialog">
-                                                        <button className="btn">Close</button>
+                                                    <form method="dialog" className='flex w-full gap-2'>
+                                                        <div className='w-full'>
+                                                            <button className='btn btn-neutral w-full' onClick={updateTask}>Save</button>
+                                                        </div>
+                                                        <div className='w-full'>
+                                                            <button className="btn w-full">Close</button>
+                                                        </div>
                                                     </form>
                                                 </div>
                                             </div>

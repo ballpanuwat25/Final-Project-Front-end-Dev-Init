@@ -2,23 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Palette, ChevronDown } from "lucide-react";
 
 function ThemeController({ expanded }) {
-    // Step 2: Use state to manage the selected theme
+
     const [selectedTheme, setSelectedTheme] = useState(() => {
-        // Step 3: Get the theme from localStorage on component mount
+
         return localStorage.getItem('selectedTheme') || 'light';
     });
 
-    // Step 1: Define a function to handle theme changes
     const handleThemeChange = (theme) => {
-        // Step 4: Update the theme in localStorage
         localStorage.setItem('selectedTheme', theme);
         setSelectedTheme(theme);
-        // You can also apply the theme to the entire app here if needed
-        // For example, by updating the document body's class
+
         document.body.className = `theme-${theme}`;
     };
 
-    // Step 3: Apply the selected theme on component mount
     useEffect(() => {
         document.body.className = `theme-${selectedTheme}`;
     }, [selectedTheme]);
