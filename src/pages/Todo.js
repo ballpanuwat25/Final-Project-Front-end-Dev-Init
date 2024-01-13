@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 
 import Calendar from '../components/Calendar';
+import Notification from '../components/Notification';
+
 import { formatDate } from '../utils/dateUtils';
 
 import { startOfToday } from 'date-fns';
@@ -26,27 +28,26 @@ export default function Todo() {
     const [searchInput, setSearchInput] = useState('');
     const [filteredTasks, setFilteredTasks] = useState([]);
 
-    const [notification, setNotification] = useState(null);
-
-    useEffect(() => {
-        const savedNotification = JSON.parse(localStorage.getItem('notification'));
-        setNotification(savedNotification);
-    }, []);
+    const [notificationStatus, setNotificationStatus] = useState(null);
 
     useEffect(() => {
         const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
         setTasks(savedTasks);
+
+        const savedNotification = JSON.parse(localStorage.getItem('notificationStatus'));
+        setNotificationStatus(savedNotification);
     }, []);
 
     const addTask = () => {
         const updatedTasks = [...tasks,
         {
-            taskId: Date.now(),
-            taskName: taskName,
-            taskDescription: taskDescription,
-            taskStatus: "Uncompleted",
-            taskDueDate: selectedDayFromCalendar ? selectedDayFromCalendar : startOfToday(),
-            taskPriority: taskPriority,
+            task_id: Date.now(),
+            task_name: taskName,
+            task_desc: taskDescription,
+            task_status: "Uncompleted",
+            task_dueDate: selectedDayFromCalendar ? selectedDayFromCalendar : startOfToday(),
+            task_priority: taskPriority,
+            task_readStatus: "Unread",
         }];
 
         setTasks(updatedTasks);
@@ -55,6 +56,8 @@ export default function Todo() {
         setTaskPriority('');
 
         localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+
+        window.location.reload();
     };
 
     const [selectedTaskId, setSelectedTaskId] = useState(null);
@@ -62,26 +65,26 @@ export default function Todo() {
     const [editingTaskDescription, setEditingTaskDescription] = useState('');
 
     const editTask = (taskId) => {
-        const task = tasks.find((task) => task.taskId === taskId);
+        const task = tasks.find((task) => task.task_id === taskId);
         setSelectedTaskId(taskId);
-        setEditingTaskName(task.taskName);
-        setEditingTaskDescription(task.taskDescription);
-        setTaskStatus(task.taskStatus);
-        setTaskPriority(task.taskPriority);
+        setEditingTaskName(task.task_name);
+        setEditingTaskDescription(task.task_desc);
+        setTaskStatus(task.task_status);
+        setTaskPriority(task.task_priority);
 
         document.getElementById('edit_tasks').showModal();
     };
 
     const updateTask = () => {
         const updatedTasks = tasks.map((task) =>
-            task.taskId === selectedTaskId
+            task.task_id === selectedTaskId
                 ? {
                     ...task,
-                    taskName: editingTaskName,
-                    taskDescription: editingTaskDescription,
-                    taskStatus,
-                    taskDueDate: selectedDayFromCalendar ? selectedDayFromCalendar : startOfToday(),
-                    taskPriority,
+                    task_name: editingTaskName,
+                    task_desc: editingTaskDescription,
+                    task_status: taskStatus,
+                    task_dueDate: selectedDayFromCalendar ? selectedDayFromCalendar : startOfToday(),
+                    task_priority: taskPriority,
                 }
                 : task
         );
@@ -95,13 +98,16 @@ export default function Todo() {
 
         localStorage.setItem('tasks', JSON.stringify(updatedTasks));
         document.getElementById('edit_tasks').close();
+
+        window.location.reload();
     };
 
     const deleteTask = (taskId) => {
-        const updatedTasks = tasks.filter((task) => task.taskId !== taskId);
+        const updatedTasks = tasks.filter((task) => task.task_id !== taskId);
         setTasks(updatedTasks);
 
         localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+        window.location.reload();
     };
 
     const [selectedDayFromCalendar, setSelectedDayFromCalendar] = useState(null);
@@ -120,8 +126,8 @@ export default function Todo() {
 
         const filtered = tasks.filter(
             (task) =>
-                task.taskName.toLowerCase().includes(searchTerm) ||
-                task.taskDescription.toLowerCase().includes(searchTerm)
+                task.name.toLowerCase().includes(searchTerm) ||
+                task.desc.toLowerCase().includes(searchTerm)
         );
 
         setFilteredTasks(filtered);
@@ -129,12 +135,13 @@ export default function Todo() {
 
     const taskCompleted = (taskId) => {
         const updatedTasks = tasks.map((task) => {
-            if (task.taskId === taskId) {
-                task.taskStatus = task.taskStatus === "Completed" ? "Uncompleted" : "Completed";
+            if (task.task_id === taskId) {
+                task.task_status = task.task_status === "Completed" ? "Uncompleted" : "Completed";
+                task.task_readStatus = task.task_readStatus === "Read" ? "Unread" : "Read";
             }
             return task;
         });
-
+    
         localStorage.setItem("tasks", JSON.stringify(updatedTasks));
         setTasks(updatedTasks);
     };
@@ -170,7 +177,7 @@ export default function Todo() {
     return (
         <div className="flex h-screen">
             <Sidebar>
-                <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={notification} path={"/"} />
+                <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={notificationStatus} path={"/"} />
                 <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={true} alert={false} path={"/todo"} />
                 <SidebarItem icon={<CalendarCheck size={20} />} text="Schedule" active={false} alert={false} path={"/schedule"} />
                 <SidebarItem icon={<NotebookPen size={20} />} text="DailyJournal" active={false} alert={false} path={"/journal"} />
@@ -179,6 +186,10 @@ export default function Todo() {
             <div className="flex-1 p-4 overflow-scroll">
                 <div className='w-full flex justify-between items-center'>
                     <h1 className='text-lg md:text-3xl font-bold'>My Tasks 🎯</h1>
+
+                    <div className='hidden'>
+                        <Notification />
+                    </div>
 
                     <button className="btn btn-neutral btn-sm" onClick={() => document.getElementById('add_tasks').showModal()}><Plus size={16} /> Add Tasks</button>
 
@@ -250,35 +261,35 @@ export default function Todo() {
 
                             <tbody>
                                 {(searchInput ? filteredTasks : tasks).map((task) => (
-                                    <tr key={(task.taskId)}>
+                                    <tr key={(task.task_id)}>
                                         <td>
                                             <input
                                                 type="checkbox"
                                                 className="checkbox checkbox-neutral checkbox-sm mr-2"
-                                                checked={task.taskStatus === "Completed"}
-                                                onClick={() => taskCompleted(task.taskId)}
+                                                checked={task.task_status === "Completed"}
+                                                onClick={() => taskCompleted(task.task_id)}
                                             />
                                         </td>
 
-                                        <td>{task.taskName}</td>
-                                        <td>{task.taskDescription}</td>
-                                        <td className={checkStatusClass(task.taskStatus)}>{task.taskStatus}</td>
+                                        <td>{task.task_name}</td>
+                                        <td>{task.task_desc}</td>
+                                        <td className={checkStatusClass(task.task_status)}>{task.task_status}</td>
                                         <td>
                                             <div className='flex items-center gap-2'>
                                                 <Clock4 size={16} />
-                                                {formatDate(task.taskDueDate)}
+                                                {formatDate(task.task_dueDate)}
                                             </div>
                                         </td>
                                         <td>
-                                            <div className={`${checkPriorityClass(task.taskPriority)} flex justify-center items-center pr-1`}>{task.taskPriority} {checkPriorityIcon(task.taskPriority)} </div>
+                                            <div className={`${checkPriorityClass(task.task_priority)} flex justify-center items-center pr-1`}>{task.task_priority} {checkPriorityIcon(task.task_priority)} </div>
                                         </td>
 
                                         <td className='flex gap-2'>
-                                            <button className="btn btn-sm btn-neutral " onClick={() => editTask(task.taskId)}>
+                                            <button className="btn btn-sm btn-neutral " onClick={() => editTask(task.task_id)}>
                                                 <Pencil size={16} /> Edit
                                             </button>
 
-                                            <button className="btn btn-sm btn-neutral btn-outline" onClick={() => deleteTask(task.taskId)}>
+                                            <button className="btn btn-sm btn-neutral btn-outline" onClick={() => deleteTask(task.task_id)}>
                                                 <Trash size={16} /> Delete
                                             </button>
                                         </td>
@@ -356,7 +367,7 @@ const SelectOption = ({ onSelectOptionChange }) => {
                 aria-expanded="true"
                 onClick={toggleDropdown}
             >
-                {selectedOption || 'Select Priority'}
+                {selectedOption || 'Priority'}
                 {dropdownOpen ? (
                     <ChevronUp className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
                 ) : (
@@ -365,7 +376,7 @@ const SelectOption = ({ onSelectOptionChange }) => {
             </button>
 
             {dropdownOpen && (
-                <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
+                <div className="origin-top-right absolute -top-32 mt-2 w-56 rounded-md shadow-lg">
                     <div className="rounded-md bg-base-100 border border-gray-200 dark:border-dark-5">
                         <div className="py-1">
                             <label className="flex items-center px-4 py-2 cursor-pointer hover:bg-base-300">

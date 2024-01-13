@@ -19,11 +19,11 @@ export default function Journals() {
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingJournalId, setEditingJournalId] = useState(null);
 
-    const [notification, setNotification] = useState(null);
+    const [notificationStatus, setNotificationStatus] = useState(null);
 
     useEffect(() => {
-        const savedNotification = JSON.parse(localStorage.getItem('notification'));
-        setNotification(savedNotification);
+        const savedNotification = JSON.parse(localStorage.getItem('notificationStatus'));
+        setNotificationStatus(savedNotification);
     }, []);
 
     const today = startOfToday()
@@ -103,7 +103,7 @@ export default function Journals() {
     return (
         <div className="flex h-screen">
             <Sidebar>
-                <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={notification} path={"/"} />
+                <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={notificationStatus} path={"/"} />
                 <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={false} alert={false} path={"/todo"} />
                 <SidebarItem icon={<CalendarCheck size={20} />} text="Schedule" active={false} alert={false} path={"/schedule"} />
                 <SidebarItem icon={<NotebookPen size={20} />} text="DailyJournal" active={true} alert={false} path={"/journal"} />
@@ -213,7 +213,7 @@ export default function Journals() {
 
 const Journal = ({ journal, onDelete, onEdit }) => {
     return (
-        <div className="flex flex-col p-4 rounded-xl h-72 border-2 border-primary">
+        <div className="flex flex-col p-4 input-outline input h-72 border-2 border-primary">
             <p className="text-sm mb-2 font-bold text-primary">
                 📅 {format(parseISO(journal.startDate), 'MMM dd, yyy')}
             </p>

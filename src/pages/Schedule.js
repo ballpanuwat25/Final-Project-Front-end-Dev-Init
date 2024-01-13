@@ -17,6 +17,7 @@ import {
     startOfToday,
 } from 'date-fns'
 
+import Notification from '../components/Notification';
 import Sidebar, { SidebarItem } from '../components/Sidebar';
 import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen, Clock4, Pencil, Trash, Check, Plus } from 'lucide-react';
 
@@ -27,11 +28,11 @@ function classNames(...classes) {
 export default function Schedule() {
     const [meetings, setMeetings] = useState([])
 
-    const [notification, setNotification] = useState(null);
+    const [notificationStatus, setNotificationStatus] = useState(null);
 
     useEffect(() => {
-        const savedNotification = JSON.parse(localStorage.getItem('notification'));
-        setNotification(savedNotification);
+        const savedNotification = JSON.parse(localStorage.getItem('notificationStatus'));
+        setNotificationStatus(savedNotification);
     }, []);
 
     useEffect(() => {
@@ -84,6 +85,7 @@ export default function Schedule() {
             setNewMeetingEnd('');
 
             localStorage.setItem('meetings', JSON.stringify([...meetings, newMeeting]));
+            window.location.reload();
         }
     }
 
@@ -92,6 +94,7 @@ export default function Schedule() {
         setMeetings(updatedMeetings);
 
         localStorage.setItem('meetings', JSON.stringify(updatedMeetings));
+        window.location.reload();
     }
 
     const [isEditMode, setIsEditMode] = useState(false);
@@ -130,13 +133,14 @@ export default function Schedule() {
             setEditingMeetingId(null);
 
             localStorage.setItem('meetings', JSON.stringify(updatedMeetings));
+            window.location.reload();
         }
     }
 
     return (
         <div className="flex h-screen">
             <Sidebar>
-                <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={notification} path={"/"} />
+                <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={false} alert={notificationStatus} path={"/"} />
                 <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={false} alert={false} path={"/todo"} />
                 <SidebarItem icon={<CalendarCheck size={20} />} text="Schedule" active={true} alert={false} path={"/schedule"} />
                 <SidebarItem icon={<NotebookPen size={20} />} text="DailyJournal" active={false} alert={false} path={"/journal"} />
@@ -146,6 +150,10 @@ export default function Schedule() {
                 <div className="w-full">
                     <div className='w-full flex justify-between items-center'>
                         <h1 className='text-lg md:text-3xl font-bold'>Schedule 📅</h1>
+
+                        <div className='hidden'>
+                            <Notification />
+                        </div>
 
                         <div className="flex items-center">
                             <h2 className="flex-auto font-semibold text-primary text-sm">
@@ -276,7 +284,7 @@ export default function Schedule() {
                                                             onClick={addMeeting}
                                                             className="btn btn-primary"
                                                         >
-                                                           <Plus size={18} /> Add meeting
+                                                            <Plus size={18} /> Add meeting
                                                         </button>
                                                     )}
                                                 </div>

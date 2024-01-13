@@ -5,17 +5,17 @@ import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen } from 'lucide-re
 import Notification from './components/Notification';
 
 const App = () => {
-  const [notification, setNotification] = useState(null);
+  const [notificationStatus, setNotificationStatus] = useState(null);
 
   useEffect(() => {
-    const savedNotification = JSON.parse(localStorage.getItem('notification'));
-    setNotification(savedNotification);
+    const savedNotification = JSON.parse(localStorage.getItem('notificationStatus'));
+    setNotificationStatus(savedNotification);
   }, []);
 
   return (
     <div className="flex h-screen">
       <Sidebar>
-        <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={true} alert={notification} path={"/"} />
+        <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={true} alert={notificationStatus} path={"/"} />
         <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={false} alert={false} path={"/todo"} />
         <SidebarItem icon={<CalendarCheck size={20} />} text="Schedule" active={false} alert={false} path={"/schedule"} />
         <SidebarItem icon={<NotebookPen size={20} />} text="DailyJournal" active={false} alert={false} path={"/journal"} />

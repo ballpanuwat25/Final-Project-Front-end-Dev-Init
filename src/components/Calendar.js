@@ -155,7 +155,7 @@ export default function Calendar({ onSelectedDayChange }) {
                                     {format(selectedDay, 'MMM dd, yyy')}
                                 </time>
                             </h2>
-                            <button className="btn">Close</button>
+                            <button className="btn btn-primary">Save</button>
                         </form>
                     </div>
                 </div>
