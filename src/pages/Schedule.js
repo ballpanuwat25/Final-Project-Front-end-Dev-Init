@@ -61,7 +61,7 @@ export default function Schedule() {
     }
 
     const selectedDayMeetings = meetings.filter((meeting) =>
-        isSameDay(parseISO(meeting.startDate), selectedDay)
+        isSameDay(parseISO(meeting.meet_startDate), selectedDay)
     )
 
     const [newMeetingInput, setNewMeetingInput] = useState('');
@@ -71,11 +71,12 @@ export default function Schedule() {
     const addMeeting = () => {
         if (newMeetingInput.trim() !== '') {
             const newMeeting = {
-                id: meetings.length + 1,
-                name: newMeetingInput,
-                startDate: selectedDay.toISOString(),
-                startTime: newMeetingStart,
-                endTime: newMeetingEnd,
+                meet_id: meetings.length + 1,
+                meet_name: newMeetingInput,
+                meet_startDate: selectedDay.toISOString(),
+                meet_startTime: newMeetingStart,
+                meet_endTime: newMeetingEnd,
+                meet_readStatus: 'Unread',
             };
 
             setMeetings([...meetings, newMeeting]);
@@ -90,7 +91,7 @@ export default function Schedule() {
     }
 
     const deleteMeeting = (meetingId) => {
-        const updatedMeetings = meetings.filter((meeting) => meeting.id !== meetingId);
+        const updatedMeetings = meetings.filter((meeting) => meeting.meet_id !== meetingId);
         setMeetings(updatedMeetings);
 
         localStorage.setItem('meetings', JSON.stringify(updatedMeetings));
@@ -101,11 +102,11 @@ export default function Schedule() {
     const [editingMeetingId, setEditingMeetingId] = useState(null);
 
     const editMeeting = (meetingId) => {
-        const meetingToEdit = meetings.find((meeting) => meeting.id === meetingId);
+        const meetingToEdit = meetings.find((meeting) => meeting.meet_id === meetingId);
 
-        setNewMeetingInput(meetingToEdit.name);
-        setNewMeetingStart(meetingToEdit.startTime);
-        setNewMeetingEnd(meetingToEdit.endTime);
+        setNewMeetingInput(meetingToEdit.meet_name);
+        setNewMeetingStart(meetingToEdit.meet_startTime);
+        setNewMeetingEnd(meetingToEdit.meet_endTime);
 
         setIsEditMode(true);
         setEditingMeetingId(meetingId);
@@ -114,12 +115,12 @@ export default function Schedule() {
     const updateMeeting = () => {
         if (newMeetingInput.trim() !== '') {
             const updatedMeetings = meetings.map((meeting) =>
-                meeting.id === editingMeetingId
+                meeting.meet_id === editingMeetingId
                     ? {
                         ...meeting,
-                        name: newMeetingInput,
-                        startTime: newMeetingStart,
-                        endTime: newMeetingEnd,
+                        meet_name: newMeetingInput,
+                        meet_startTime: newMeetingStart,
+                        meet_endTime: newMeetingEnd,
                     }
                     : meeting
             );
@@ -296,7 +297,7 @@ export default function Schedule() {
                                                         selectedDayMeetings.map((meeting) => (
                                                             <Meeting
                                                                 meeting={meeting}
-                                                                key={meeting.id}
+                                                                key={meeting.meet_id}
                                                                 onDelete={deleteMeeting}
                                                                 onEdit={editMeeting}
                                                             />
@@ -314,7 +315,7 @@ export default function Schedule() {
 
                                     <div className="w-1 h-1 mx-auto mt-1">
                                         {meetings.some((meeting) =>
-                                            isSameDay(parseISO(meeting.startDate), day)
+                                            isSameDay(parseISO(meeting.meet_startDate), day)
                                         ) && (
                                                 <div className="w-1 h-1 rounded-full bg-accent"></div>
                                             )}
@@ -334,23 +335,23 @@ const Meeting = ({ meeting, onDelete, onEdit }) => {
     return (
         <div className="flex items-center px-4 py-2 gap-2 rounded-xl bg-neutral text-neutral-content">
             <div className="flex-auto">
-                <p className="font-bold">{meeting.name}</p>
+                <p className="font-bold">{meeting.meet_name}</p>
                 <p className="mt-0.5 inline-flex items-center gap-1 text-xs">
-                    <Clock4 size={14} /> {meeting.startTime} - {meeting.endTime}
+                    <Clock4 size={14} /> {meeting.meet_startTime} - {meeting.meet_endTime}
                 </p>
             </div>
 
             <div className='inline-flex gap-2'>
                 <button
                     className="btn btn-sm btn-circle"
-                    onClick={() => onEdit(meeting.id)}
+                    onClick={() => onEdit(meeting.meet_id)}
                 >
                     <Pencil size={16} />
                 </button>
 
                 <button
                     className="btn btn-sm btn-circle"
-                    onClick={() => onDelete(meeting.id)}
+                    onClick={() => onDelete(meeting.meet_id)}
                 >
                     <Trash size={16} />
                 </button>
