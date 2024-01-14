@@ -3,6 +3,7 @@ import Sidebar, { SidebarItem } from './components/Sidebar';
 import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen } from 'lucide-react';
 
 import Notification from './components/Notification';
+import TodoComponent from './components/layout/TodoComponent';
 
 const App = () => {
   const [notificationStatus, setNotificationStatus] = useState(null);
@@ -29,6 +30,10 @@ const App = () => {
         </div>
 
         <div className="divider my-2" />
+
+        <div>
+          <TodoComponent />
+        </div>
       </div>
     </div>
   );

@@ -235,7 +235,7 @@ export default function Schedule() {
                                             (isEqual(day, selectedDay) || isToday(day)) &&
                                             'font-bold',
 
-                                            'mx-auto flex h-6 w-6 md:h-8 md:w-8 items-center justify-center rounded-full text-base'
+                                            'mx-auto flex h-6 w-6 md:h-8 md:w-8 items-center justify-center rounded-full md:text-base'
                                         )}
                                     >
                                         <time dateTime={format(day, 'yyyy-MM-dd')}>

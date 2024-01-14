@@ -1,63 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { formatDate } from "../../utils/dateUtils";
-import { isToday } from 'date-fns';
+import React from 'react'
 
 function TodoComponent() {
-    const [tasks, setTasks] = useState([]);
-
-    useEffect(() => {
-        const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        const todayTasks = savedTasks.filter(task => isToday(new Date(task.taskDueDate)));
-        setTasks(todayTasks);
-    }, []);
-
-    const taskCompleted = (taskId) => {
-        const updatedTasks = tasks.map((task) => {
-            if (task.taskId === taskId) {
-                task.taskStatus = task.taskStatus === "completed" ? "uncompleted" : "completed";
-            }
-            return task;
-        });
-
-        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-        setTasks(updatedTasks);
-    };
-
-    const checkTask = () => {
-        const todayTasks = tasks.filter(task => isToday(new Date(task.taskDueDate)));
-        return todayTasks.length > 0;
-    }
-
     return (
-        <div className="w-full h-full flex flex-col gap-2">
-            <div className="h-full flex flex-col p-2 gap-2 lg:p-4 lg:gap-4">
-                <h1 className="font-bold text-2xl">To-Do in Today!</h1>
-                <div className="w-full h-full flex flex-col gap-2">
-                    {checkTask() ? (
-                        tasks.map((task) => (
-                            <div key={task.taskId}>
-                                <button
-                                    className="btn btn-neutral w-full inline-flex justify-start items-center"
-                                    onClick={() => taskCompleted(task.taskId)}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        className="checkbox checkbox-secondary checkbox-sm mr-2"
-                                        checked={task.taskStatus === "completed"}
-                                    />
-                                    {task.taskName} | {task.taskDescription} | {task.taskPriority} | {formatDate(task.taskDueDate)}
-                                </button>
-                            </div>
-                        ))
-                    ) : (
-                        <>
-                            <p className="text-sm">No tasks for today!</p>
-                        </>
-                    )}
-                </div>
-            </div>
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 justify-between items-center'>
+            <div className='border shadow w-full h-52 rounded p-2'>task Today</div>
+            <div className='border shadow w-full h-52 rounded p-2'>task Monthly</div>
+            <div className='border shadow w-full h-52 rounded p-2'>Over Due task</div>
         </div>
-    );
+    )
 }
 
-export default TodoComponent;
+export default TodoComponent

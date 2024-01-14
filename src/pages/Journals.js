@@ -151,28 +151,35 @@ export default function Journals() {
                                             onChange={(e) => setNewJournalInput(e.target.value)}
                                         />
 
-                                        {isEditMode ? (
-                                            <button
-                                                type="button"
-                                                onClick={updateJournal}
-                                                className="btn btn-neutral"
-                                            >
-                                               <Check size={20} /> Update
-                                            </button>
-                                        ) : (
-                                            <button
-                                                type="button"
-                                                onClick={addJournal}
-                                                className="btn btn-neutral"
-                                            >
-                                               <Save size={20} /> Save
-                                            </button>
-                                        )}
                                     </div>
                                 </div>
                                 <div className="modal-action">
-                                    <form method="dialog">
-                                        <button className="btn">Close</button>
+                                    <form method="dialog" className='flex w-full gap-2'>
+                                        {isEditMode ? (
+                                            <div className='w-full'>
+                                                <button
+                                                    type="button"
+                                                    onClick={updateJournal}
+                                                    className="btn btn-neutral w-full"
+                                                >
+                                                    <Check size={20} /> Update
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className='w-full'>
+                                                <button
+                                                    type="button"
+                                                    onClick={addJournal}
+                                                    className="btn btn-neutral w-full"
+                                                >
+                                                    <Save size={20} /> Save
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        <div className='w-full'>
+                                            <button className="btn w-full">Close</button>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
