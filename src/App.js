@@ -4,6 +4,7 @@ import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen } from 'lucide-re
 
 import Notification from './components/Notification';
 import TodoComponent from './components/layout/TodoComponent';
+import ScheduleComponent from './components/layout/ScheduleComponent';
 
 const App = () => {
   const [notificationStatus, setNotificationStatus] = useState(null);
@@ -33,6 +34,21 @@ const App = () => {
 
         <div>
           <TodoComponent />
+        </div>
+
+        <div className='bg-red-500 mt-4 flex flex-row gap-4 h-1/3'>
+          <div className='bg-red-300 w-full rounded'>
+            <div>
+              <div>Add tasks for Today</div>
+              <div>Add your journal</div>
+            </div>
+          </div>
+
+          <div className='bg-red-200 w-full rounded'>Timer</div>
+        </div>
+
+        <div>
+          <ScheduleComponent />
         </div>
       </div>
     </div>
