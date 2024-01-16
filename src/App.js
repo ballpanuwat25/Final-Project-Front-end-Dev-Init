@@ -40,7 +40,7 @@ const App = () => {
           <div className='bg-red-300 w-full rounded h-52 md:h-80'>
             <div>
               <div>Add tasks for Today</div>
-              <div>Add your journal</div>
+              <div>Table today tasks</div>
             </div>
           </div>
 
