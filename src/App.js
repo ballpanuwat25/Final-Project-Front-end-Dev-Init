@@ -36,18 +36,18 @@ const App = () => {
           <TodoComponent />
         </div>
 
-        <div className='mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 h-auto md:h-80'>
-          <div className='bg-red-300 w-full rounded h-52 md:h-80'>
+        <div className='mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 h-auto md:h-72'>
+          <div className='bg-red-300 w-full rounded h-52 md:h-72'>
             <div>
               <div>Add tasks for Today</div>
               <div>Table today tasks</div>
             </div>
           </div>
 
-          <div className='bg-red-200 w-full rounded h-52 md:h-80'>Timer</div>
+          <div className='bg-red-200 w-full rounded h-52 md:h-72'>Timer</div>
         </div>
 
-        <div className='bg-blue-300 wifull rounded h-52 md:h-40 mt-4'>
+        <div className='bg-blue-300 wifull rounded h-52 md:h-60 mt-4'>
           <ScheduleComponent />
         </div>
       </div>

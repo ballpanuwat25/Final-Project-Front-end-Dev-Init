@@ -37,20 +37,31 @@ function TodoComponent() {
 
     return (
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 justify-between items-center'>
-            <div className='border shadow w-full h-52 rounded p-2'>
-                <h2>Tasks Today</h2>
-                <div>{`${todayTasks.completed}/${todayTasks.total}`}</div>
-                <progress className="progress progress-primary w-56" value={calculateProgress(todayTasks)} max="100"></progress>
+            <div className='border shadow w-full rounded-lg p-4'>
+                <h2 className="text-2xl font-bold">Task Today</h2>
+                <div className='flex justify-between mt-8 mb-0'>
+                    <div>{`${todayTasks.completed}/${todayTasks.total}`} Task</div>
+                    <div>{calculateProgress(todayTasks)} %</div>
+                </div>
+                <progress className="progress progress-primary w-full" value={calculateProgress(todayTasks)} max="100"></progress>
             </div>
-            <div className='border shadow w-full h-52 rounded p-2'>
-                <h2>Tasks Monthly</h2>
-                <div>{`${monthlyTasks.completed}/${monthlyTasks.total}`}</div>
-                <progress className="progress progress-primary w-56" value={calculateProgress(monthlyTasks)} max="100"></progress>
+
+            <div className='border shadow w-full rounded-lg p-4'>
+                <h2 className="text-2xl font-bold">Task Monthly</h2>
+                <div className='flex justify-between mt-8 mb-0'>
+                    <div>{`${monthlyTasks.completed}/${monthlyTasks.total}`} Task</div>
+                    <div>{calculateProgress(monthlyTasks)} %</div>
+                </div>
+                <progress className="progress progress-secondary w-full" value={calculateProgress(monthlyTasks)} max="100"></progress>
             </div>
-            <div className='border shadow w-full h-52 rounded p-2'>
-                <h2>Overdue Tasks</h2>
-                <div>{`${overdueTasks.completed}/${overdueTasks.total}`}</div>
-                <progress className="progress progress-primary w-56" value={calculateProgress(overdueTasks)} max="100"></progress>
+
+            <div className='border shadow w-full rounded-lg p-4'>
+                <h2 className="text-2xl font-bold">Overdue Task</h2>
+                <div className='flex justify-between mt-8 mb-0'>
+                    <div>{`${overdueTasks.completed}/${overdueTasks.total}`} Task</div>
+                    <div>{calculateProgress(overdueTasks)} %</div>
+                </div>
+                <progress className="progress progress-accent w-full" value={calculateProgress(overdueTasks)} max="100"></progress>
             </div>
         </div>
     );
