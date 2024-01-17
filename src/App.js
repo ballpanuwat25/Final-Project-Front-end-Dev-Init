@@ -3,7 +3,7 @@ import Sidebar, { SidebarItem } from './components/Sidebar';
 import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen } from 'lucide-react';
 
 import Notification from './components/Notification';
-import TodoComponent from './components/layout/TodoComponent';
+import TodoComponent, { TaskTodayComponent } from './components/layout/TodoComponent';
 import ScheduleComponent from './components/layout/ScheduleComponent';
 
 const App = () => {
@@ -32,22 +32,15 @@ const App = () => {
 
         <div className="divider my-2" />
 
-        <div>
-          <TodoComponent />
+        <TodoComponent />
+
+        <div className='mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 h-auto md:h-96'>
+          <TaskTodayComponent />
+
+          <div className='bg-red-200 w-full rounded h-52 md:h-96'>Timer</div>
         </div>
 
-        <div className='mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 h-auto md:h-72'>
-          <div className='bg-red-300 w-full rounded h-52 md:h-72'>
-            <div>
-              <div>Add tasks for Today</div>
-              <div>Table today tasks</div>
-            </div>
-          </div>
-
-          <div className='bg-red-200 w-full rounded h-52 md:h-72'>Timer</div>
-        </div>
-
-        <div className='bg-blue-300 wifull rounded h-52 md:h-60 mt-4'>
+        <div className='bg-blue-300 wifull rounded h-52 md:h-40 mt-4'>
           <ScheduleComponent />
         </div>
       </div>
