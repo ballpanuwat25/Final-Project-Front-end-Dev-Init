@@ -5,6 +5,7 @@ import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen } from 'lucide-re
 import Notification from './components/Notification';
 import TodoComponent, { TaskTodayComponent } from './components/layout/TodoComponent';
 import ScheduleComponent from './components/layout/ScheduleComponent';
+import TimerComponent from './components/layout/TimerComponent';
 
 const App = () => {
   const [notificationStatus, setNotificationStatus] = useState(null);
@@ -15,7 +16,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="flex h-screen bg-red-500">
+    <div style={{height: "100dvh"}} className="flex">
       <Sidebar>
         <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={true} alert={notificationStatus} path={"/"} />
         <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={false} alert={false} path={"/todo"} />
@@ -34,11 +35,13 @@ const App = () => {
 
         <TodoComponent />
 
-        <div className='mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 h-auto md:h-96'>
+        <div className='mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 h-auto md:h-96 mb-4'>
           <TaskTodayComponent />
 
           <ScheduleComponent />
         </div>
+
+        <TimerComponent />
       </div>
     </div>
   );

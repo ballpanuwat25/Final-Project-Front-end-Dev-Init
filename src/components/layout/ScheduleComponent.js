@@ -198,7 +198,7 @@ export default function ScheduleComponent() {
 
 const Meeting = ({ meeting }) => {
   return (
-    <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl bg-base-300 text-base-content">
+    <li className="flex items-center px-4 py-2 space-x-4 group border-b text-base-content">
       <div className="flex-auto">
         <p className="font-bold">{meeting.meet_name}</p>
         <p className="mt-0.5">
