@@ -42,8 +42,8 @@ function TodoComponent() {
     return (
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 justify-between items-center'>
             <div className='border shadow w-full rounded-lg p-4'>
-                <h2 className="text-2xl font-bold">Task Today</h2>
-                <div className='flex justify-between mt-7 mb-0'>
+                <h2 className="md:text-2xl font-bold">Task Today</h2>
+                <div className='flex justify-between mt-2 md:mt-7 mb-0'>
                     <div>{`${todayTasks.completed}/${todayTasks.total}`} Task</div>
                     <div>{calculateProgress(todayTasks)} %</div>
                 </div>
@@ -51,8 +51,8 @@ function TodoComponent() {
             </div>
 
             <div className='border shadow w-full rounded-lg p-4'>
-                <h2 className="text-2xl font-bold">Task Monthly</h2>
-                <div className='flex justify-between mt-7 mb-0'>
+                <h2 className="md:text-2xl font-bold">Task Monthly</h2>
+                <div className='flex justify-between mt-2 md:mt-7 mb-0'>
                     <div>{`${monthlyTasks.completed}/${monthlyTasks.total}`} Task</div>
                     <div>{calculateProgress(monthlyTasks)} %</div>
                 </div>
@@ -60,8 +60,8 @@ function TodoComponent() {
             </div>
 
             <div className='border shadow w-full rounded-lg p-4'>
-                <h2 className="text-2xl font-bold">Overdue Task</h2>
-                <div className='flex justify-between mt-7 mb-0'>
+                <h2 className="md:text-2xl font-bold">Overdue Task</h2>
+                <div className='flex justify-between mt-2 md:mt-7 mb-0'>
                     <div>{`${overdueTasks.completed}/${overdueTasks.total}`} Task</div>
                     <div>{calculateProgress(overdueTasks)} %</div>
                 </div>
@@ -164,7 +164,7 @@ export function TaskTodayComponent() {
     };
 
     return (
-        <div className='w-full border shadow rounded-lg h-52 md:h-96 p-4 overflow-y-scroll'>
+        <div className='w-full border shadow rounded-lg h-72 md:h-96 p-4 overflow-y-scroll'>
             <div className='flex flex-row gap-3'>
                 <input type="text" placeholder="Search..." className="input input-bordered w-full" value={searchInput} onChange={handleSearchInputChange} />
 

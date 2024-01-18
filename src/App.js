@@ -15,7 +15,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-red-500">
       <Sidebar>
         <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={true} alert={notificationStatus} path={"/"} />
         <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={false} alert={false} path={"/todo"} />
@@ -37,10 +37,6 @@ const App = () => {
         <div className='mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 h-auto md:h-96'>
           <TaskTodayComponent />
 
-          <div className='bg-red-200 w-full rounded h-52 md:h-96'>Timer</div>
-        </div>
-
-        <div className='bg-blue-300 wifull rounded h-52 md:h-40 mt-4'>
           <ScheduleComponent />
         </div>
       </div>
