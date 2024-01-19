@@ -54,7 +54,7 @@ const Countdown = () => {
 
   return (
     <div className="flex flex-col rounded-lg shadow border justify-center px-4 py-2">
-      <div className='inline-flex gap-4 items-center justify-between'>
+      <div className='inline-flex gap-4 items-center justify-between mb-2 md:mb-0'>
         <h1 className="md:text-2xl font-bold mb-1">Focus Timer</h1>
         <button
           onClick={handleResetCountdown}
@@ -71,7 +71,7 @@ const Countdown = () => {
         >
           <Plus size={16} />
         </button>
-        <h1 className="text-4xl font-bold mb-1">{formatTime(time)}</h1>
+        <h1 className="text-lg md:text-3xl font-bold">{formatTime(time)}</h1>
         <button
           onClick={handleSubtractTime}
           className="btn btn-circle btn-sm btn-outline btn-secondary"
@@ -83,7 +83,7 @@ const Countdown = () => {
       <button
         onClick={handleToggleCountdown}
         className={`${isCounting ? 'btn-secondary' : 'btn-primary'
-          } btn mt-4`}
+          } btn mt-4 mb-2 md:mb-0 md:mt-2`}
       >
         {isCounting ? <Pause /> : <Play />}
       </button>

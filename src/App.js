@@ -7,6 +7,8 @@ import TodoComponent, { TaskTodayComponent } from './components/layout/TodoCompo
 import ScheduleComponent from './components/layout/ScheduleComponent';
 import Countdown from './components/layout/Countdown';
 
+import { Link } from 'react-router-dom';
+
 const App = () => {
   const [notificationStatus, setNotificationStatus] = useState(null);
 
@@ -43,6 +45,21 @@ const App = () => {
 
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 h-auto'>
           <Countdown />
+
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
+            <div className='rounded-lg p-4 bg-primary'>
+              <h1 className='text-lg md:text-2xl font-bold text-primary-content mb-4'>Start your day with Daily Journal.</h1>
+              <Link to='/journal' className='btn w-full'>
+                Go to journal~
+              </Link>
+            </div>
+            <div className='rounded-lg p-4 bg-secondary'>
+              <h1 className='text-lg md:text-2xl font-bold text-secondary-content mb-4'>Plan your day with Kanban Board.</h1>
+              <Link to='/test' className='btn w-full'>
+                Go to Kanban~
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>

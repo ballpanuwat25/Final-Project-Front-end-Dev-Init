@@ -166,7 +166,7 @@ export function TaskTodayComponent() {
     return (
         <div className='w-full border shadow rounded-lg h-72 md:h-96 p-4 overflow-y-scroll'>
             <div className='flex flex-row gap-3'>
-                <input type="text" placeholder="Search..." className="input input-bordered w-full" value={searchInput} onChange={handleSearchInputChange} />
+                <input type="text" placeholder="Search..." className="input input-primary w-full" value={searchInput} onChange={handleSearchInputChange} />
 
                 <button className="btn btn-neutral" onClick={() => document.getElementById('add_tasks').showModal()}><Plus size={16} /> Add Tasks</button>
 
