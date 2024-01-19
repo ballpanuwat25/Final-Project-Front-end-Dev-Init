@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { isToday, isThisMonth, differenceInDays, startOfToday } from 'date-fns';
 import SelectOption from '../SelectOption';
-import { Plus, ChevronsDown, ChevronsUp, ChevronsRight } from 'lucide-react';
+import { Plus, ChevronsDown, ChevronsUp, ChevronsRight, ArrowUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 function TodoComponent() {
     const [todoList, setTodoList] = useState([]);
@@ -42,7 +43,12 @@ function TodoComponent() {
     return (
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 justify-between items-center'>
             <div className='border shadow w-full rounded-lg p-4'>
-                <h2 className="md:text-2xl font-bold">Task Today</h2>
+                <div className='inline-flex justify-between items-center w-full'>
+                    <h2 className="md:text-2xl font-bold">Task Today</h2>
+                    <Link to='/todo' className='btn btn-circle btn-sm btn-primary btn-outline'>
+                        <ArrowUpRight />
+                    </Link>
+                </div>
                 <div className='flex justify-between mt-2 md:mt-7 mb-0'>
                     <div>{`${todayTasks.completed}/${todayTasks.total}`} Task</div>
                     <div>{calculateProgress(todayTasks)} %</div>
@@ -51,7 +57,12 @@ function TodoComponent() {
             </div>
 
             <div className='border shadow w-full rounded-lg p-4'>
-                <h2 className="md:text-2xl font-bold">Task Monthly</h2>
+                <div className='inline-flex justify-between items-center w-full'>
+                    <h2 className="md:text-2xl font-bold">Task Monthly</h2>
+                    <Link to='/todo' className='btn btn-circle btn-sm btn-secondary btn-outline'>
+                        <ArrowUpRight />
+                    </Link>
+                </div>
                 <div className='flex justify-between mt-2 md:mt-7 mb-0'>
                     <div>{`${monthlyTasks.completed}/${monthlyTasks.total}`} Task</div>
                     <div>{calculateProgress(monthlyTasks)} %</div>
@@ -60,7 +71,12 @@ function TodoComponent() {
             </div>
 
             <div className='border shadow w-full rounded-lg p-4'>
-                <h2 className="md:text-2xl font-bold">Overdue Task</h2>
+                <div className='inline-flex justify-between items-center w-full'>
+                    <h2 className="md:text-2xl font-bold">Overdue Task</h2>
+                    <Link to='/todo' className='btn btn-circle btn-sm btn-accent btn-outline'>
+                        <ArrowUpRight />
+                    </Link>
+                </div>
                 <div className='flex justify-between mt-2 md:mt-7 mb-0'>
                     <div>{`${overdueTasks.completed}/${overdueTasks.total}`} Task</div>
                     <div>{calculateProgress(overdueTasks)} %</div>
