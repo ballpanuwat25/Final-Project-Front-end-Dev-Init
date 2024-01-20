@@ -1,12 +1,7 @@
 import { useState, useEffect } from 'react'
-import {
-    format,
-    parseISO,
-    startOfToday,
-} from 'date-fns'
-
+import { format, parseISO, startOfToday } from 'date-fns'
 import Sidebar, { SidebarItem } from '../components/Sidebar';
-import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen, Pencil, Trash, Save, Check, Plus } from 'lucide-react';
+import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen, Pencil, Trash, Save, Check, Plus, Presentation } from 'lucide-react';
 
 export default function Journals() {
     const [journals, setJournals] = useState([])
@@ -107,6 +102,7 @@ export default function Journals() {
                 <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={false} alert={false} path={"/todo"} />
                 <SidebarItem icon={<CalendarCheck size={20} />} text="Schedule" active={false} alert={false} path={"/schedule"} />
                 <SidebarItem icon={<NotebookPen size={20} />} text="DailyJournal" active={true} alert={false} path={"/journal"} />
+                <SidebarItem icon={<Presentation size={20} />} text="Kanban" active={false} alert={false} path={"/kanban"} />
             </Sidebar>
 
             <div className="flex-1 p-4 overflow-scroll">

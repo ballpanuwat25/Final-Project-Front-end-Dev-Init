@@ -1,6 +1,7 @@
-// Column.js
 import React, { useState, useEffect } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
+
+import { Pencil, Trash, Check, Plus, X } from 'lucide-react';
 
 import Task from './Task';
 
@@ -15,6 +16,7 @@ const Column = ({
 }) => {
 
     const [isEditing, setIsEditing] = useState(false);
+    const [isAdding, setIsAdding] = useState(false);
     const [newColumnName, setNewColumnName] = useState(column.title);
     const [newTaskContent, setNewTaskContent] = useState('');
 
@@ -35,47 +37,62 @@ const Column = ({
         if (newTaskContent.trim() !== '') {
             onAddNewTask(column.id, newTaskContent);
             setNewTaskContent('');
+            setIsAdding(false);
         }
     };
 
+    const handleAddClick = () => {
+        if (!isAdding) {
+            setIsAdding(true);
+        } else {
+            setIsAdding(false);
+        }
+    };
+
+    const handleCancelClick = () => {
+        setIsAdding(false);
+        setNewTaskContent('');
+    };
+
     return (
-        <div className="flex flex-col items-center p-4">
-            <div className="flex justify-between items-center mb-2">
+        <div className="flex flex-col items-center p-4 bg-base-200 rounded">
+            <div className="flex justify-between items-center mb-4 w-full">
                 {isEditing ? (
-                    <>
+                    <div className='flex items-center gap-2 justify-between w-full'>
                         <input
                             type="text"
                             value={newColumnName}
                             onChange={(e) => setNewColumnName(e.target.value)}
-                            className="mr-2 border p-1"
+                            className="input input-bordered w-full input-sm input-primary"
                         />
-                        <button onClick={handleSaveClick} className="p-1 bg-green-500 text-white rounded">
-                            Save
+                        <button onClick={handleSaveClick} className="btn btn-sm btn-circle btn-success btn-outline">
+                            <Check size={16} />
                         </button>
-                    </>
+                    </div>
                 ) : (
-                    <>
-                        <h2 className="text-lg font-semibold mb-4">{column.title}</h2>
+                    <div className='flex items-center gap-2 justify-between w-full'>
+                        <h2 className="text-xl font-semibold">{column.title}</h2>
                         <div className="flex gap-2">
-                            <button onClick={handleEditClick} className="p-1 bg-blue-500 text-white rounded">
-                                Edit
+                            <button onClick={handleEditClick} className="btn btn-sm btn-circle btn-primary btn-outline">
+                                <Pencil size={16} />
                             </button>
                             <button
                                 onClick={() => onDeleteColumn(column.id)}
-                                className="p-1 bg-red-500 text-white rounded"
+                                className="btn btn-sm btn-circle btn-secondary btn-outline"
                             >
-                                Delete
+                                <Trash size={16} />
                             </button>
                         </div>
-                    </>
+                    </div>
                 )}
             </div>
+
             <Droppable droppableId={column.id}>
                 {(provided) => (
                     <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className={`flex-1 min-w-72 bg-white rounded p-4`}
+                        className={`flex flex-col flex-1 min-w-72`}
                     >
                         {tasks.map((task, index) => (
                             <Task
@@ -90,17 +107,35 @@ const Column = ({
                     </div>
                 )}
             </Droppable>
-            <div className="mt-2">
-                <input
-                    type="text"
-                    value={newTaskContent}
-                    onChange={(e) => setNewTaskContent(e.target.value)}
-                    placeholder="New Task"
-                    className="border p-1"
-                />
-                <button onClick={handleAddTaskClick} className="p-1 bg-blue-500 text-white rounded">
-                    Add Task
-                </button>
+
+            <div className="mt-4 flex flex-col items-center gap-2 w-full">
+                {isAdding ? (
+                    <div className='flex flex-col gap-2 w-full'>
+                        <input
+                            type="text"
+                            value={newTaskContent}
+                            onChange={(e) => setNewTaskContent(e.target.value)}
+                            placeholder="New Task"
+                            className="input input-bordered w-full input-primary"
+                        />
+                        <div className='flex flex-row gap-2 w-full'>
+                            <div className='w-full'>
+                                <button onClick={handleAddTaskClick} className="btn w-full">
+                                    <Check size={16} />
+                                </button>
+                            </div>
+                            <div className='w-full'>
+                                <button onClick={handleCancelClick} className="btn w-full">
+                                    <X size={16} />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <button onClick={handleAddClick} className="btn w-full">
+                        <Plus size={16} /> Add Task
+                    </button>
+                )}
             </div>
         </div>
     );

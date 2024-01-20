@@ -1,6 +1,11 @@
-// Task.js
 import React, { useState, useEffect } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
+
+import Calendar from '../Calendar';
+import SelectOption from '../SelectOption';
+import { formatDate } from '../../utils/dateUtils';
+
+import { ChevronsDown, ChevronsRight, ChevronsUp } from 'lucide-react';
 
 const Task = ({ task, index, onEditTaskContent, onDeleteTask }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -23,6 +28,34 @@ const Task = ({ task, index, onEditTaskContent, onDeleteTask }) => {
     setIsEditing(false);
   };
 
+  const handleOptionChange = (value) => {
+    setNewPriority(value);
+  };
+
+  const handleSelectedDayChange = (day) => {
+    setNewDueDate(day);
+  };
+
+  const checkPriorityClass = (priority) => {
+    if (priority === 'Low') {
+      return 'badge badge-success';
+    } else if (priority === 'Medium') {
+      return 'badge badge-warning';
+    } else if (priority === 'High') {
+      return 'badge badge-error';
+    }
+  };
+
+  const checkPriorityIcon = (priority) => {
+    if (priority === 'Low') {
+      return <ChevronsDown size={20} />;
+    } else if (priority === 'Medium') {
+      return <ChevronsRight size={20} />;
+    } else if (priority === 'High') {
+      return <ChevronsUp size={20} />;
+    }
+  };
+
   return (
     <Draggable draggableId={task.id} index={index}>
       {(provided, snapshot) => (
@@ -30,52 +63,51 @@ const Task = ({ task, index, onEditTaskContent, onDeleteTask }) => {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className={`bg-white p-4 rounded-md shadow-md mb-2 ${snapshot.isDragging && 'opacity-70'}`}
+          className={`bg-base-100 p-4 rounded-md shadow-md mb-4 ${snapshot.isDragging && 'opacity-70'}`}
         >
           {isEditing ? (
-            <>
+            <div className='flex flex-col gap-2'>
               <input
                 type="text"
                 value={newContent}
                 onChange={(e) => setNewContent(e.target.value)}
-                className="mb-2 border p-1"
+                className="input input-primary w-full"
               />
-              <label className="block mb-1">Due Date:</label>
-              <input
-                type="date"
-                value={newDueDate}
-                onChange={(e) => setNewDueDate(e.target.value)}
-                className="mb-2 border p-1"
-              />
-              <label className="block mb-1">Priority:</label>
-              <select
-                value={newPriority}
-                onChange={(e) => setNewPriority(e.target.value)}
-                className="mb-2 border p-1"
-              >
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
-              <button onClick={handleSaveClick} className="p-1 bg-green-500 text-white rounded">
+
+              <div className='flex w-full gap-2'>
+                <Calendar onSelectedDayChange={handleSelectedDayChange} />
+                <SelectOption onSelectOptionChange={handleOptionChange} />
+              </div>
+
+              <button onClick={handleSaveClick} className="btn w-full btn-neutral">
                 Save
               </button>
-            </>
+            </div>
           ) : (
             <>
-              <div>{task.content}</div>
-              <div>{`Due Date: ${task.dueDate}`}</div>
-              <div>{`Priority: ${task.priority}`}</div>
-              <div className="flex gap-2 mt-2">
-                <button onClick={handleEditClick} className="p-1 bg-blue-500 text-white rounded">
-                  Edit
-                </button>
-                <button
-                  onClick={() => onDeleteTask(task.id)}
-                  className="p-1 bg-red-500 text-white rounded"
-                >
-                  Delete
-                </button>
+              <div className='inline-flex justify-between w-full mb-2'>
+                <p className='font-bold'>{task.content}</p>
+                <div className={`${checkPriorityClass(task.priority)}`}>{checkPriorityIcon(task.priority)}</div>
+              </div>
+
+              <p className='text-sm mb-2'>Deadline · {formatDate(task.dueDate)}</p>
+
+              <div className="divider my-2" />
+
+              <div className="flex gap-2 mt-2 w-full">
+                <div className='w-full'>
+                  <button onClick={handleEditClick} className="btn btn-sm w-full btn-outline btn-primary">
+                    Edit
+                  </button>
+                </div>
+                <div className='w-full'>
+                  <button
+                    onClick={() => onDeleteTask(task.id)}
+                    className="btn btn-sm w-full btn-error btn-outline"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </>
           )}

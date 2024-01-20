@@ -9,7 +9,6 @@ const Board = () => {
         tasks: {
             task1: { id: 'task1', content: 'Task 1', dueDate: '2024-01-15', priority: 'High' },
             task2: { id: 'task2', content: 'Task 2', dueDate: '2024-01-18', priority: 'Medium' },
-            // Add more tasks as needed
         },
         columns: {
             column1: {
@@ -241,7 +240,7 @@ const Board = () => {
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <div className="flex flex-col gap-4">
-                <button onClick={addNewColumn} className="p-2 bg-blue-500 text-white rounded-md">
+                <button onClick={addNewColumn} className="btn btn-primary btn-outline">
                     Add New Column
                 </button>
                 <>

@@ -5,6 +5,7 @@ import {
     ListTodo,
     CalendarCheck,
     NotebookPen,
+    Presentation,
     ChevronsDown, ChevronsRight, ChevronsUp,
     Pencil, Trash, Plus, Clock4
 } from 'lucide-react';
@@ -135,7 +136,7 @@ export default function Todo() {
             }
             return task;
         });
-    
+
         localStorage.setItem("tasks", JSON.stringify(updatedTasks));
         setTasks(updatedTasks);
     };
@@ -175,6 +176,7 @@ export default function Todo() {
                 <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={true} alert={false} path={"/todo"} />
                 <SidebarItem icon={<CalendarCheck size={20} />} text="Schedule" active={false} alert={false} path={"/schedule"} />
                 <SidebarItem icon={<NotebookPen size={20} />} text="DailyJournal" active={false} alert={false} path={"/journal"} />
+                <SidebarItem icon={<Presentation size={20} />} text="Kanban" active={false} alert={false} path={"/kanban"} />
             </Sidebar>
 
             <div className="flex-1 p-4 overflow-scroll">
@@ -201,7 +203,7 @@ export default function Todo() {
 
                                 <input
                                     type="text"
-                                    placeholder="Enter a task desc"
+                                    placeholder="Enter a task description"
                                     value={taskDescription}
                                     onChange={(e) => setTaskDescription(e.target.value)}
                                     className="input input-bordered input-primary w-full"
@@ -261,7 +263,7 @@ export default function Todo() {
                                                 type="checkbox"
                                                 className="checkbox checkbox-neutral checkbox-sm mr-2"
                                                 checked={task.task_status === "Completed"}
-                                                onClick={() => taskCompleted(task.task_id)}
+                                                onChange={() => taskCompleted(task.task_id)}
                                             />
                                         </td>
 
@@ -283,49 +285,49 @@ export default function Todo() {
                                                 <Pencil size={16} /> Edit
                                             </button>
 
+                                            <dialog id="edit_tasks" className="modal">
+                                                <div className="modal-box">
+                                                    <div className="flex flex-col gap-2">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Enter a task name"
+                                                            value={editingTaskName}
+                                                            onChange={(e) => setEditingTaskName(e.target.value)}
+                                                            className="input input-bordered input-primary w-full"
+                                                        />
+
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Enter a task desc"
+                                                            value={editingTaskDescription}
+                                                            onChange={(e) => setEditingTaskDescription(e.target.value)}
+                                                            className="input input-bordered input-primary w-full"
+                                                        />
+
+                                                        <div className='flex w-full gap-2'>
+                                                            <SelectOption onSelectOptionChange={handleOptionChange} />
+
+                                                            <Calendar onSelectedDayChange={handleSelectedDayChange} />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="modal-action">
+                                                        <form method="dialog" className='flex w-full gap-2'>
+                                                            <div className='w-full'>
+                                                                <button className='btn btn-neutral w-full' onClick={updateTask}>Save</button>
+                                                            </div>
+                                                            <div className='w-full'>
+                                                                <button className="btn w-full">Close</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </dialog>
+
                                             <button className="btn btn-sm btn-neutral btn-outline" onClick={() => deleteTask(task.task_id)}>
                                                 <Trash size={16} /> Delete
                                             </button>
                                         </td>
-
-                                        <dialog id="edit_tasks" className="modal">
-                                            <div className="modal-box">
-                                                <div className="flex flex-col gap-2">
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Enter a task name"
-                                                        value={editingTaskName}
-                                                        onChange={(e) => setEditingTaskName(e.target.value)}
-                                                        className="input input-bordered input-primary w-full"
-                                                    />
-
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Enter a task desc"
-                                                        value={editingTaskDescription}
-                                                        onChange={(e) => setEditingTaskDescription(e.target.value)}
-                                                        className="input input-bordered input-primary w-full"
-                                                    />
-
-                                                    <div className='flex w-full gap-2'>
-                                                        <SelectOption onSelectOptionChange={handleOptionChange} />
-
-                                                        <Calendar onSelectedDayChange={handleSelectedDayChange} />
-                                                    </div>
-                                                </div>
-
-                                                <div className="modal-action">
-                                                    <form method="dialog" className='flex w-full gap-2'>
-                                                        <div className='w-full'>
-                                                            <button className='btn btn-neutral w-full' onClick={updateTask}>Save</button>
-                                                        </div>
-                                                        <div className='w-full'>
-                                                            <button className="btn w-full">Close</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </dialog>
                                     </tr>
                                 ))}
                             </tbody>

@@ -90,6 +90,30 @@ function ThemeController({ expanded }) {
                             type="radio"
                             name="theme-dropdown"
                             className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                            aria-label="Autumn"
+                            value="autumn"
+                            checked={selectedTheme === 'autumn'}
+                            onChange={() => handleThemeChange('autumn')}
+                        />
+                    </li>
+
+                    <li>
+                        <input
+                            type="radio"
+                            name="theme-dropdown"
+                            className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                            aria-label="Pastel"
+                            value="pastel"
+                            checked={selectedTheme === 'pastel'}
+                            onChange={() => handleThemeChange('pastel')}
+                        />
+                    </li>
+
+                    <li>
+                        <input
+                            type="radio"
+                            name="theme-dropdown"
+                            className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
                             aria-label="Dim"
                             value="dim"
                             checked={selectedTheme === 'dim'}
@@ -106,6 +130,18 @@ function ThemeController({ expanded }) {
                             value="night"
                             checked={selectedTheme === 'night'}
                             onChange={() => handleThemeChange('night')}
+                        />
+                    </li>
+
+                    <li>
+                        <input
+                            type="radio"
+                            name="theme-dropdown"
+                            className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                            aria-label="Coffee"
+                            value="coffee"
+                            checked={selectedTheme === 'coffee'}
+                            onChange={() => handleThemeChange('coffee')}
                         />
                     </li>
                 </ul>

@@ -7,7 +7,7 @@ import App from './App';
 import Todo from './pages/Todo';
 import Schedule from './pages/Schedule';
 import Journals from './pages/Journals';
-import Test from './pages/Test';
+import Kanban from './pages/Kanban';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
@@ -29,8 +29,8 @@ const router = createBrowserRouter([
     element: <Journals />,
   },
   {
-    path: '/test',
-    element: <Test />,
+    path: '/kanban',
+    element: <Kanban />,
   }
 ])
 

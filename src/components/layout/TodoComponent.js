@@ -135,7 +135,8 @@ export function TaskTodayComponent() {
         setSearchInput(searchTerm);
 
         const filtered = tasks.filter(
-            (task) => task.task_name.toLowerCase().includes(searchTerm)
+            (task) => task.task_name.toLowerCase().includes(searchTerm) &&
+                isToday(new Date(task.task_dueDate))
         );
 
         setFilteredTasks(filtered);
@@ -200,7 +201,7 @@ export function TaskTodayComponent() {
 
                             <input
                                 type="text"
-                                placeholder="Enter a task desc"
+                                placeholder="Enter a task description"
                                 value={taskDescription}
                                 onChange={(e) => setTaskDescription(e.target.value)}
                                 className="input input-bordered input-primary w-full"

@@ -1,4 +1,3 @@
-// Columns.js
 import React from 'react';
 import Column from './Column';
 
@@ -14,8 +13,8 @@ const Columns = ({
 }) => {
 
   return (
-    <div className='flex flex-row'>
-      {columnOrder.map((columnId, index) => {
+    <div className='flex flex-row gap-4'>
+      {columnOrder.map((columnId) => {
         const column = columns[columnId];
         const columnTasks = column.taskIds.map((taskId) => tasks[taskId]);
 

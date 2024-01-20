@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar, { SidebarItem } from './components/Sidebar';
-import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen } from 'lucide-react';
+import { LayoutDashboard, ListTodo, CalendarCheck, NotebookPen, Presentation } from 'lucide-react';
 
 import Notification from './components/Notification';
 import TodoComponent, { TaskTodayComponent } from './components/layout/TodoComponent';
@@ -24,6 +24,7 @@ const App = () => {
         <SidebarItem icon={<ListTodo size={20} />} text="TodoList" active={false} alert={false} path={"/todo"} />
         <SidebarItem icon={<CalendarCheck size={20} />} text="Schedule" active={false} alert={false} path={"/schedule"} />
         <SidebarItem icon={<NotebookPen size={20} />} text="DailyJournal" active={false} alert={false} path={"/journal"} />
+        <SidebarItem icon={<Presentation size={20} />} text="Kanban" active={false} alert={false} path={"/kanban"} />
       </Sidebar>
 
       <div className="flex-1 p-4 overflow-scroll">
@@ -55,7 +56,7 @@ const App = () => {
             </div>
             <div className='rounded-lg p-4 bg-secondary'>
               <h1 className='text-lg md:text-2xl font-bold text-secondary-content mb-4'>Plan your day with Kanban Board.</h1>
-              <Link to='/test' className='btn w-full'>
+              <Link to='/kanban' className='btn w-full'>
                 Go to Kanban~
               </Link>
             </div>

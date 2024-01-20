@@ -53,9 +53,9 @@ export default function Sidebar({ children }) {
         <aside className="h-screen">
             <nav className="h-full flex flex-col border-r shadow-sm">
                 <div className="p-4 pb-2 flex justify-between items-center">
-                    <h1 className={`text-primary font-bold ${expanded ? "w-full" : "hidden"
+                    <h1 className={`text-sm ${expanded ? "w-full" : "hidden"
                         }`}>
-                        PMI Web Applicaion
+                        Created by <Link to="https://github.com/ballpanuwat25" className="font-bold text-primary underline">ballpanuwat25</Link> 🐣
                     </h1>
                     <button
                         onClick={() => toggleSidebar()}
