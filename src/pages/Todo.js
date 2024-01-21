@@ -30,6 +30,10 @@ export default function Todo() {
 
     const [notificationStatus, setNotificationStatus] = useState(null);
 
+    const [selectedTaskId, setSelectedTaskId] = useState(null);
+    const [editingTaskName, setEditingTaskName] = useState('');
+    const [editingTaskDescription, setEditingTaskDescription] = useState('');
+
     useEffect(() => {
         const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
         setTasks(savedTasks);
@@ -59,10 +63,6 @@ export default function Todo() {
 
         window.location.reload();
     };
-
-    const [selectedTaskId, setSelectedTaskId] = useState(null);
-    const [editingTaskName, setEditingTaskName] = useState('');
-    const [editingTaskDescription, setEditingTaskDescription] = useState('');
 
     const editTask = (taskId) => {
         const task = tasks.find((task) => task.task_id === taskId);

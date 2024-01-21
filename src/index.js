@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
@@ -9,9 +10,7 @@ import Schedule from './pages/Schedule';
 import Journals from './pages/Journals';
 import Kanban from './pages/Kanban';
 
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-
-const router = createBrowserRouter([
+const routes = [
   {
     path: '/',
     element: <App />,
@@ -31,11 +30,15 @@ const router = createBrowserRouter([
   {
     path: '/kanban',
     element: <Kanban />,
-  }
-])
+  },
+];
+
+const router = createBrowserRouter({
+  routes
+});
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <RouterProvider router={router} />
-)
+);
 
 reportWebVitals();

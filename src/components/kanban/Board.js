@@ -1,4 +1,3 @@
-// Board.js
 import React, { useState, useEffect } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
