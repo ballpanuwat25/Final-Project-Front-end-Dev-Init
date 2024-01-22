@@ -1,7 +1,7 @@
 
 # Personal Information Management (PIM) Web Application
 
-Welcome to the Personal Information Management (PIM) web application! This application is built using React.js, Tailwind CSS, Daisy UI, and React Beautiful Dnd to help you manage your personal tasks, schedule, and more.
+Welcome to the Personal Information Management (PIM) web application! This application is built using React.js, Tailwind CSS, Daisy UI, and React Beautiful Dnd to help you manage your personal tasks, schedule, and daily journal.
 
 ## Table of Contents
 - [Features](#features)
@@ -14,13 +14,13 @@ Welcome to the Personal Information Management (PIM) web application! This appli
 
 ### 1. Dashboard Page
 - Overview of your personal information.
-- Quick access to important sections like Todo, Kanban, and Schedule.
+- Quick access to important sections like Todo, Kanban, Schedule, Daily Journal, and Others
 
 ### 2. Todo
 - Create, edit, and delete tasks.
 - Mark tasks as completed.
 - Organize tasks with priority levels.
-- Filter tasks based on status.
+- Search tasks based on task names.
 
 ### 3. Kanban Board
 - Utilize a Kanban board for visual task management.
@@ -28,9 +28,12 @@ Welcome to the Personal Information Management (PIM) web application! This appli
 - Customize columns and labels for your workflow.
 
 ### 4. Schedule
-- Plan your day with a schedule view.
 - Add, edit, and delete events.
-- View events in a daily or weekly layout.
+- View events in a responsive layout.
+
+### 5. Daily Journal
+- Capture your thoughts and experiences with the daily journal.
+- Reflect on your day and maintain a personal diary.
 
 ## Installation
 
@@ -49,7 +52,7 @@ Visit http://localhost:3000 in your browser to view the application.
 ## Usage
 
 -   Navigate to the dashboard to get an overview of your personal information.
--   Explore the Todo, Kanban, and Schedule sections for specific functionalities.
+-   Explore the Todo, Kanban, Daily Journal, and Schedule sections for specific functionalities.
 -   Customize your tasks, manage your schedule, and stay organized!
 
 ## Contributing
