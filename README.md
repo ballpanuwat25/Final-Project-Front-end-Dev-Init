@@ -38,14 +38,14 @@ Welcome to the Personal Information Management (PIM) web application! This appli
 ## Installation
 
 1. Clone the repository:
-	``git clone https://github.com/ballpanuwat25/Final-Project-Front-end-Dev-Init.git``
-	``cd Final-Project-Front-end-Dev-Init``
+	`git clone https://github.com/ballpanuwat25/Final-Project-Front-end-Dev-Init.git`
+	`cd Final-Project-Front-end-Dev-Init`
 
 2. Install dependencies:
-	``npm install``
+   	`npm install`
 
 3. Run the development server:
-	 ``npm start``
+   	`npm start`
 
 Visit http://localhost:3000 in your browser to view the application.
 
